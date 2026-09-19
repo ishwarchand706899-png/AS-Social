@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AS Social - Followers</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+body{
+    margin:0;
+    padding-bottom:80px;
+    background:#f5f6f8;
+}
+
+.page{
+    max-width:650px;
+    margin:auto;
+    min-height:100vh;
+}
+
+/* HEADER */
+
+.header{
+    background:#1877f2;
+    color:white;
+    padding:15px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.header button{
+    background:white;
+    color:#1877f2;
+    border:0;
+    border-radius:8px;
+    padding:8px 12px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.header h2{
+    margin:0;
+    font-size:20px;
+}
+
+/* TABS */
+
+.tabs{
+    display:flex;
+    background:white;
+    border-bottom:1px solid #ddd;
+    position:sticky;
+    top:58px;
+    z-index:90;
+}
+
+.tab{
+    width:50%;
+    padding:15px;
+    text-align:center;
+    cursor:pointer;
+    font-weight:600;
+    color:#777;
+}
+
+.tab.active{
+    color:#1877f2;
+    border-bottom:3px solid #1877f2;
+}
+
+/* LIST */
+
+.list{
+    padding:15px;
+}
+
+.user-card{
+    background:white;
+    padding:13px;
+    margin-bottom:10px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    box-shadow:0 2px 9px rgba(0,0,0,.06);
+}
+
+.user-card img{
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#eee;
+    cursor:pointer;
+}
+
+.user-info{
+    flex:1;
+    min-width:0;
+    cursor:pointer;
+}
+
+.user-info strong{
+    display:block;
+    font-size:16px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.user-info span{
+    display:block;
+    color:#777;
+    font-size:14px;
+    margin-top:3px;
+}
+
+.user-actions{
+    display:flex;
+    gap:6px;
+    flex-shrink:0;
+}
+
+.view-btn,
+.follow-btn{
+    border:0;
+    border-radius:8px;
+    padding:8px 11px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+}
+
+.view-btn{
+    background:#1877f2;
+    color:white;
+}
+
+.follow-btn{
+    background:#1877f2;
+    color:white;
+}
+
+.follow-btn.following{
+    background:#eee;
+    color:#333;
+}
+
+.follow-btn:disabled,
+.view-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+/* EMPTY */
+
+.empty{
+    text-align:center;
+    color:#777;
+    padding:40px 20px;
+}
+
+/* LOADING */
+
+.loading{
+    text-align:center;
+    padding:35px;
+    color:#777;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:white;
+    display:flex;
+    justify-content:space-around;
+    padding:9px 5px;
+    box-shadow:0 -2px 10px rgba(0,0,0,.1);
+    z-index:1000;
+}
+
+.bottom-nav a{
+    text-decoration:none;
+    color:#333;
+    text-align:center;
+    font-size:12px;
+}
+
+.bottom-nav a:hover{
+    color:#1877f2;
+}
+
+/* MOBILE */
+
+@media(max-width:500px){
+
+    .list{
+        padding:10px;
+    }
+
+    .user-card{
+        padding:11px;
+        gap:9px;
+    }
+
+    .user-card img{
+        width:50px;
+        height:50px;
+    }
+
+    .view-btn{
+        display:none;
+    }
+
+    .follow-btn{
+        padding:8px 9px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+<!-- HEADER -->
+
+<div class="header">
+<button type="button" onclick="goBack()">← Back</button>
+<h2 id="title">Followers</h2>
+</div>
+
+<!-- TABS -->
+
+<div class="tabs">
+<div id="followersTab" class="tab active">Followers</div>
+<div id="followingTab" class="tab">Following</div>
+</div>
+
+<!-- USER LIST -->
+
+<div id="userList" class="list">
+<p class="loading">Loading...</p>
+</div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav">
+<a href="home.html">🏠<br>Home</a>
+<a href="search.html">🔍<br>Search</a>
+<a href="create-post.html">➕<br>Post</a>
+<a href="notifications.html">🔔<br>Alerts</a>
+<a href="profile.html">👤<br>Profile</a>
+</nav>
+
+
+<script type="module">
+
+import { supabase } from "./js/supabase.js";
+
+let currentUser = null;
+let targetUser = null;
+let currentTab = "followers";
+
+window.goBack = function() {
+    window.history.back();
+};
+
+window.openProfile = function(userId) {
+    window.location.href = `profile.html?user=${encodeURIComponent(userId)}`;
+};
+
+/* =========================
+   CHECK USER
+========================= */
+
+async function checkUser(){
+    const { data, error } = await supabase.auth.getUser();
+
+    if(error || !data.user){
+        window.location.href = "login.html";
+        return;
+    }
+
+    currentUser = data.user;
+
+    const params = new URLSearchParams(window.location.search);
+    targetUser = params.get("user") || currentUser.id;
+    currentTab = params.get("tab") || "followers";
+
+    document.getElementById("followersTab").addEventListener("click", showFollowers);
+    document.getElementById("followingTab").addEventListener("click", showFollowing);
+
+    if(currentTab === "following"){
+        showFollowing();
+    } else {
+        showFollowers();
+    }
+}
+
+/* =========================
+   FOLLOWERS
+========================= */
+
+async function showFollowers(){
+    currentTab = "followers";
+    document.getElementById("followersTab").classList.add("active");
+    document.getElementById("followingTab").classList.remove("active");
+    document.getElementById("title").innerText = "Followers";
+    await loadFollowers();
+}
+
+/* =========================
+   FOLLOWING
+========================= */
+
+async function showFollowing(){
+    currentTab = "following";
+    document.getElementById("followingTab").classList.add("active");
+    document.getElementById("followersTab").classList.remove("active");
+    document.getElementById("title").innerText = "Following";
+    await loadFollowing();
+}
+
+/* =========================
+   LOAD FOLLOWERS
+========================= */
+
+async function loadFollowers(){
+    const list = document.getElementById("userList");
+    list.innerHTML = `<p class="loading">Loading followers...</p>`;
+
+    const { data, error } = await supabase
+        .from("followers")
+        .select(`
+            follower_id,
+            profiles!followers_follower_id_fkey(
+                id,
+                username,
+                full_name,
+                avatar_url
+            )
+        `)
+        .eq("following_id", targetUser);
+
+    if(error){
+        console.error("Followers error:", error);
+        list.innerHTML = `<p class="empty">Followers load nahi ho rahe.</p>`;
+        return;
+    }
+
+    displayUsers(data || [], "follower");
+}
+
+/* =========================
+   LOAD FOLLOWING
+========================= */
+
+async function loadFollowing(){
+    const list = document.getElementById("userList");
+    list.innerHTML = `<p class="loading">Loading following...</p>`;
+
+    const { data, error } = await supabase
+        .from("followers")
+        .select(`
+            following_id,
+            profiles!followers_following_id_fkey(
+                id,
+                username,
+                full_name,
+                avatar_url
+            )
+        `)
+        .eq("follower_id", targetUser);
+
+    if(error){
+        console.error("Following error:", error);
+        list.innerHTML = `<p class="empty">Following list load nahi ho rahi.</p>`;
+        return;
+    }
+
+    displayUsers(data || [], "following");
+}
+
+/* =========================
+   DISPLAY USERS
+========================= */
+
+async function displayUsers(rows, type){
+    const list = document.getElementById("userList");
+
+    if(rows.length === 0){
+        list.innerHTML = `
+            <p class="empty">
+                ${type === "follower" ? "👥 No followers yet." : "➕ Not following anyone yet."}
+            </p>
+        `;
+        return;
+    }
+
+    list.innerHTML = "";
+
+    for(const row of rows){
+        const user = row.profiles;
+        if(!user) continue;
+
+        const card = document.createElement("div");
+        card.className = "user-card";
+
+        const avatar = user.avatar_url || "https://via.placeholder.com/60";
+
+        card.innerHTML = `
+            <img src="${escapeAttribute(avatar)}" alt="Profile" class="user-avatar">
+            <div class="user-info">
+                <strong>${escapeHTML(user.full_name || "User")}</strong>
+                <span>${user.username ? "@" + escapeHTML(user.username) : ""}</span>
+            </div>
+            <div class="user-actions">
+                <button type="button" class="view-btn">View</button>
+                ${String(user.id) !== String(currentUser.id) ? `<button type="button" class="follow-btn">Loading</button>` : ""}
+            </div>
+        `;
+
+        card.querySelector(".user-avatar").addEventListener("click", () => openProfile(user.id));
+        card.querySelector(".user-info").addEventListener("click", () => openProfile(user.id));
+        card.querySelector(".view-btn").addEventListener("click", () => openProfile(user.id));
+
+        const followBtn = card.querySelector(".follow-btn");
+        if(followBtn){
+            await updateFollowButton(followBtn, user.id);
+            followBtn.addEventListener("click", () => toggleFollow(user.id, followBtn));
+        }
+
+        list.appendChild(card);
+    }
+}
+
+/* =========================
+   CHECK FOLLOW STATUS
+========================= */
+
+async function updateFollowButton(button, userId){
+    const { data, error } = await supabase
+        .from("followers")
+        .select("id")
+        .eq("follower_id", currentUser.id)
+        .eq("following_id", userId)
+        .maybeSingle();
+
+    if(error){
+        console.error("Follow status error:", error);
+        button.innerText = "Follow";
+        return;
+    }
+
+    if(data){
+        button.innerText = "Following";
+        button.classList.add("following");
+    } else {
+        button.innerText = "Follow";
+        button.classList.remove("following");
+    }
+}
+
+/* =========================
+   FOLLOW / UNFOLLOW
+========================= */
+
+async function toggleFollow(userId, button){
+    if(String(userId) === String(currentUser.id)) return;
+
+    button.disabled = true;
+    const isFollowing = button.classList.contains("following");
+
+    if(isFollowing){
+        const { error } = await supabase
+            .from("followers")
+            .delete()
+            .eq("follower_id", currentUser.id)
+            .eq("following_id", userId);
+
+        if(!error){
+            button.innerText = "Follow";
+            button.classList.remove("following");
+        }
+    } else {
+        const { error } = await supabase
+            .from("followers")
+            .insert({
+                follower_id: currentUser.id,
+                following_id: userId
+            });
+
+        if(!error){
+            button.innerText = "Following";
+            button.classList.add("following");
+        }
+    }
+
+    button.disabled = false;
+}
+
+/* =========================
+   HELPERS
+========================= */
+
+function escapeHTML(str) {
+    return String(str || "").replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+    );
+}
+
+function escapeAttribute(str) {
+    return String(str || "").replace(/"/g, '&quot;');
+}
+
+checkUser();
+
+</script>
+
+</body>
+</html>

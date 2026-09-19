@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AS Social - Profile</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+/* =========================
+   PROFILE PAGE
+========================= */
+
+.profile-page{
+    max-width:650px;
+    margin:20px auto;
+    padding:15px;
+    padding-bottom:90px;
+}
+
+.profile-card{
+    background:#fff;
+    border-radius:20px;
+    padding:28px 20px;
+    text-align:center;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.profile-avatar{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #1877f2;
+    background:#eee;
+}
+
+.profile-name{
+    margin:12px 0 3px;
+    font-size:24px;
+}
+
+.username{
+    color:#777;
+    font-size:15px;
+}
+
+.bio{
+    margin:12px auto;
+    color:#555;
+    max-width:450px;
+    line-height:1.5;
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stats{
+    display:flex;
+    justify-content:center;
+    gap:45px;
+    margin:22px 0;
+}
+
+.stat{
+    cursor:pointer;
+    text-align:center;
+    min-width:70px;
+}
+
+.stat strong{
+    display:block;
+    font-size:21px;
+}
+
+.stat span{
+    color:#777;
+    font-size:14px;
+}
+
+.stat:hover strong,
+.stat:hover span{
+    color:#1877f2;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.profile-actions{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:6px;
+}
+
+.profile-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px 20px;
+    border:none;
+    border-radius:9px;
+    background:#1877f2;
+    color:white;
+    cursor:pointer;
+    margin:5px;
+    font-size:14px;
+    font-weight:600;
+    text-decoration:none;
+    transition:.2s;
+}
+
+.profile-btn:hover{
+    opacity:.9;
+    transform:translateY(-1px);
+}
+
+.profile-btn.secondary{
+    background:#eee;
+    color:#333;
+}
+
+.profile-btn.chat-btn{
+    background:#111827;
+    color:#fff;
+}
+
+.profile-btn.danger{
+    background:#e53935;
+}
+
+.profile-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+    transform:none;
+}
+
+/* =========================
+   POSTS
+========================= */
+
+.posts-title{
+    margin:25px 5px 12px;
+    font-size:20px;
+}
+
+.user-post{
+    background:#fff;
+    border-radius:15px;
+    padding:15px;
+    margin-bottom:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.06);
+}
+
+.user-post p{
+    line-height:1.5;
+    white-space:pre-wrap;
+}
+
+.user-post img{
+    width:100%;
+    max-height:450px;
+    object-fit:cover;
+    border-radius:12px;
+    margin-top:10px;
+}
+
+/* PHOTO INPUT */
+
+#photoInput{
+    display:none;
+}
+
+.change-photo{
+    margin-top:5px;
+}
+
+/* =========================
+   EDIT MODAL
+========================= */
+
+.edit-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:3000;
+    align-items:center;
+    justify-content:center;
+    padding:15px;
+}
+
+.edit-modal.show{
+    display:flex;
+}
+
+.edit-box{
+    width:100%;
+    max-width:430px;
+    background:#fff;
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 10px 35px rgba(0,0,0,.25);
+}
+
+.edit-box h2{
+    margin-top:0;
+    margin-bottom:20px;
+}
+
+.edit-field{
+    margin-bottom:15px;
+    text-align:left;
+}
+
+.edit-field label{
+    display:block;
+    margin-bottom:6px;
+    font-size:14px;
+    font-weight:600;
+}
+
+.edit-field input,
+.edit-field textarea{
+    width:100%;
+    box-sizing:border-box;
+    padding:11px;
+    border:1px solid #ddd;
+    border-radius:9px;
+    font-size:14px;
+    outline:none;
+}
+
+.edit-field input:focus,
+.edit-field textarea:focus{
+    border-color:#1877f2;
+}
+
+.edit-field textarea{
+    min-height:90px;
+    resize:vertical;
+}
+
+.edit-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:20px;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+.profile-message{
+    text-align:center;
+    color:#777;
+    padding:20px;
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:white;
+    display:flex;
+    justify-content:space-around;
+    padding:10px;
+    box-shadow:0 -2px 10px rgba(0,0,0,.1);
+    z-index:1000;
+}
+
+.bottom-nav a{
+    text-decoration:none;
+    color:#333;
+    text-align:center;
+    font-size:13px;
+}
+
+.bottom-nav a:hover{
+    color:#1877f2;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:500px){
+
+    .profile-page{
+        margin:10px auto;
+        padding:10px;
+        padding-bottom:85px;
+    }
+
+    .profile-card{
+        padding:22px 15px;
+    }
+
+    .profile-avatar{
+        width:95px;
+        height:95px;
+    }
+
+    .stats{
+        gap:25px;
+    }
+
+    .profile-name{
+        font-size:21px;
+    }
+
+    .profile-btn{
+        padding:9px 15px;
+        font-size:13px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header class="topbar">
+
+    <div class="brand">
+        <span class="small-logo">AS</span>
+        AS Social
+    </div>
+
+    <button
+        type="button"
+        onclick="window.location.href='home.html'"
+    >
+        Home
+    </button>
+
+</header>
+
+
+<!-- =========================
+     PROFILE
+========================= -->
+
+<main class="profile-page">
+
+<section class="profile-card">
+
+
+    <!-- AVATAR -->
+
+    <img
+        id="avatar"
+        class="profile-avatar"
+        src="https://via.placeholder.com/110"
+        alt="Profile Photo"
+    >
+
+
+    <!-- NAME -->
+
+    <h2
+        id="fullName"
+        class="profile-name"
+    >
+        Loading...
+    </h2>
+
+
+    <!-- USERNAME -->
+
+    <div
+        id="username"
+        class="username"
+    ></div>
+
+
+    <!-- BIO -->
+
+    <p
+        id="bio"
+        class="bio"
+    ></p>
+
+
+    <!-- =========================
+         STATS
+    ========================= -->
+
+    <div class="stats">
+
+        <div
+            class="stat"
+            onclick="openPosts()"
+        >
+            <strong id="postCount">0</strong>
+            <span>Posts</span>
+        </div>
+
+
+        <div
+            class="stat"
+            onclick="openFollowers()"
+        >
+            <strong id="followersCount">0</strong>
+            <span>Followers</span>
+        </div>
+
+
+        <div
+            class="stat"
+            onclick="openFollowing()"
+        >
+            <strong id="followingCount">0</strong>
+            <span>Following</span>
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         FOLLOW / MESSAGE / EDIT
+    ========================= -->
+
+    <div
+        id="followArea"
+        class="profile-actions"
+    ></div>
+
+
+    <!-- =========================
+         PHOTO
+    ========================= -->
+
+    <div
+        id="photoArea"
+        class="change-photo"
+    ></div>
+
+
+</section>
+
+
+<!-- =========================
+     POSTS
+========================= -->
+
+<h3 class="posts-title">
+    Posts
+</h3>
+
+
+<div id="userPosts">
+
+    <p class="profile-message">
+        Loading posts...
+    </p>
+
+</div>
+
+
+</main>
+
+
+<!-- =========================
+     EDIT PROFILE MODAL
+========================= -->
+
+<div
+    id="editModal"
+    class="edit-modal"
+>
+
+    <div class="edit-box">
+
+        <h2>
+            Edit Profile
+        </h2>
+
+
+        <div class="edit-field">
+
+            <label for="editFullName">
+                Full Name
+            </label>
+
+            <input
+                type="text"
+                id="editFullName"
+                placeholder="Enter your name"
+                maxlength="50"
+            >
+
+        </div>
+
+
+        <div class="edit-field">
+
+            <label for="editUsername">
+                Username
+            </label>
+
+            <input
+                type="text"
+                id="editUsername"
+                placeholder="Enter username"
+                maxlength="30"
+            >
+
+        </div>
+
+
+        <div class="edit-field">
+
+            <label for="editBio">
+                Bio
+            </label>
+
+            <textarea
+                id="editBio"
+                placeholder="Write something about yourself..."
+                maxlength="160"
+            ></textarea>
+
+        </div>
+
+
+        <div class="edit-actions">
+
+            <button
+                type="button"
+                class="profile-btn secondary"
+                id="cancelEditBtn"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                class="profile-btn"
+                id="saveProfileBtn"
+            >
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     BOTTOM NAV
+========================= -->
+
+<nav class="bottom-nav">
+
+    <a href="home.html">
+        🏠
+        <br>
+        Home
+    </a>
+
+
+    <a href="search.html">
+        🔍
+        <br>
+        Search
+    </a>
+
+
+    <a href="create-post.html">
+        ➕
+        <br>
+        Post
+    </a>
+
+
+    <a href="notifications.html">
+        🔔
+        <br>
+        Alerts
+    </a>
+
+
+    <a href="profile.html">
+        👤
+        <br>
+        Profile
+    </a>
+
+</nav>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script type="module">
+
+import { supabase } from "./js/supabase.js";
+
+
+let currentUser = null;
+let targetId = null;
+let currentProfile = null;
+
+
+/* =========================
+   CHECK USER
+========================= */
+
+async function checkUser(){
+
+    const {
+        data,
+        error
+    } = await supabase.auth.getUser();
+
+
+    if(error || !data.user){
+
+        window.location.href =
+            "login.html";
+
+        return;
+
+    }
+
+
+    currentUser =
+        data.user;
+
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    targetId =
+        params.get("user") ||
+        currentUser.id;
+
+
+    await loadProfile();
+
+}
+
+
+/* =========================
+   LOAD PROFILE
+========================= */
+
+async function loadProfile(){
+
+    const {
+        data: profile,
+        error
+    } =
+        await supabase
+        .from("profiles")
+        .select("*")
+        .eq(
+            "id",
+            targetId
+        )
+        .maybeSingle();
+
+
+    if(error){
+
+        console.error(
+            "Profile error:",
+            error
+        );
+
+        document.getElementById(
+            "fullName"
+        ).innerText =
+            "Profile not found";
+
+        return;
+
+    }
+
+
+    if(!profile){
+
+        document.getElementById(
+            "fullName"
+        ).innerText =
+            "Profile not found";
+
+        document.getElementById(
+            "userPosts"
+        ).innerHTML = `
+            <p class="profile-message">
+                User profile nahi mila.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    currentProfile =
+        profile;
+
+
+    document.getElementById(
+        "fullName"
+    ).innerText =
+        profile.full_name ||
+        "User";
+
+
+    document.getElementById(
+        "username"
+    ).innerText =
+        profile.username
+        ?
+        "@" + profile.username
+        :
+        "";
+
+
+    document.getElementById(
+        "bio"
+    ).innerText =
+        profile.bio ||
+        "";
+
+
+    document.getElementById(
+        "avatar"
+    ).src =
+        profile.avatar_url ||
+        "https://via.placeholder.com/110";
+
+
+    await loadStats();
+
+    await loadUserPosts();
+
+
+    if(
+        String(targetId) ===
+        String(currentUser.id)
+    ){
+
+        showOwnProfile();
+
+    }else{
+
+        await showOtherProfile();
+
+    }
+
+}
+
+
+/* =========================
+   LOAD STATS
+========================= */
+
+async function loadStats(){
+
+    const {
+        count: posts
+    } =
+        await supabase
+        .from("posts")
+        .select("*", {
+            count:"exact",
+            head:true
+        })
+        .eq(
+            "user_id",
+            targetId
+        );
+
+
+    const {
+        count: followers
+    } =
+        await supabase
+        .from("followers")
+        .select("*", {
+            count:"exact",
+            head:true
+        })
+        .eq(
+            "following_id",
+            targetId
+        );
+
+
+    const {
+        count: following
+    } =
+        await supabase
+        .from("followers")
+        .select("*", {
+            count:"exact",
+            head:true
+        })
+        .eq(
+            "follower_id",
+            targetId
+        );
+
+
+    document.getElementById(
+        "postCount"
+    ).innerText =
+        posts || 0;
+
+
+    document.getElementById(
+        "followersCount"
+    ).innerText =
+        followers || 0;
+
+
+    document.getElementById(
+        "followingCount"
+    ).innerText =
+        following || 0;
+
+}
+
+
+/* =========================
+   OWN PROFILE
+========================= */
+
+/* =========================
+   OWN PROFILE
+========================= */
+
+function showOwnProfile(){
+
+    document.getElementById("followArea").innerHTML = `
+
+        <a
+            href="chat.html?user=${encodeURIComponent(targetId)}"
+            class="profile-btn chat-btn"
+        >
+            💬 Message
+        </a>
+
+        <button
+            type="button"
+            class="profile-btn"
+            id="editProfileBtn"
+        >
+            ✏️ Edit Profile
+        </button>
+
+        <a
+            href="settings.html"
+            class="profile-btn secondary"
+            style="text-decoration:none;"
+        >
+            ⚙️ Settings
+        </a>
+
+    `;
+
+
+    document.getElementById("photoArea").innerHTML = `
+
+        <label
+            for="photoInput"
+            class="profile-btn secondary"
+        >
+            📷 Change Photo
+        </label>
+
+        <input
+            type="file"
+            id="photoInput"
+            accept="image/*"
+        >
+
+    `;
+
+
+    document.getElementById("editProfileBtn")
+        .addEventListener(
+            "click",
+            openEditModal
+        );
+
+
+    document.getElementById("photoInput")
+        .addEventListener(
+            "change",
+            uploadPhoto
+        );
+
+}
+
+
+
+/* =========================
+   OTHER PROFILE
+========================= */
+
+async function showOtherProfile(){
+
+    document.getElementById(
+        "photoArea"
+    ).innerHTML = "";
+
+
+    const {
+        data: existing,
+        error
+    } =
+        await supabase
+        .from("followers")
+        .select("id")
+        .eq(
+            "follower_id",
+            currentUser.id
+        )
+        .eq(
+            "following_id",
+            targetId
+        )
+        .maybeSingle();
+
+
+    if(error){
+
+        console.error(
+            "Follow check error:",
+            error
+        );
+
+    }
+
+
+    const area =
+        document.getElementById(
+            "followArea"
+        );
+
+
+    /*
+       FOLLOW + MESSAGE
+    */
+
+    area.innerHTML = `
+
+        <a
+            href="chat.html?user=${encodeURIComponent(targetId)}"
+            class="profile-btn chat-btn"
+        >
+            💬 Message
+        </a>
+
+        <button
+            type="button"
+            class="profile-btn"
+            id="followBtn"
+        >
+            ${existing ? "Unfollow" : "Follow"}
+        </button>
+
+    `;
+
+
+    document.getElementById(
+        "followBtn"
+    ).addEventListener(
+        "click",
+        toggleFollow
+    );
+
+}
+
+
+/* =========================
+   FOLLOW / UNFOLLOW
+========================= */
+
+async function toggleFollow(){
+
+    const btn =
+        document.getElementById(
+            "followBtn"
+        );
+
+
+    btn.disabled = true;
+
+
+    const {
+        data: existing
+    } =
+        await supabase
+        .from("followers")
+        .select("id")
+        .eq(
+            "follower_id",
+            currentUser.id
+        )
+        .eq(
+            "following_id",
+            targetId
+        )
+        .maybeSingle();
+
+
+    /* =========================
+       UNFOLLOW
+    ========================= */
+
+    if(existing){
+
+        const {
+            error
+        } =
+            await supabase
+            .from("followers")
+            .delete()
+            .eq(
+                "id",
+                existing.id
+            );
+
+
+        if(error){
+
+            alert(
+                "Unfollow error: " +
+                error.message
+            );
+
+            btn.disabled = false;
+
+            return;
+
+        }
+
+
+        btn.innerText =
+            "Follow";
+
+
+        btn.disabled = false;
+
+
+        await loadStats();
+
+        return;
+
+    }
+
+
+    /* =========================
+       FOLLOW
+    ========================= */
+
+    const {
+        error: followError
+    } =
+        await supabase
+        .from("followers")
+        .insert({
+
+            follower_id:
+                currentUser.id,
+
+            following_id:
+                targetId
+
+        });
+
+
+    if(followError){
+
+        alert(
+            "Follow error: " +
+            followError.message
+        );
+
+        btn.disabled = false;
+
+        return;
+
+    }
+
+
+    /* =========================
+       GET SENDER NAME
+    ========================= */
+
+    const {
+        data: senderProfile
+    } =
+        await supabase
+        .from("profiles")
+        .select(
+            "full_name, username"
+        )
+        .eq(
+            "id",
+            currentUser.id
+        )
+        .maybeSingle();
+
+
+    const senderName =
+        senderProfile?.full_name ||
+        senderProfile?.username ||
+        "Someone";
+
+
+    /* =========================
+       NOTIFICATION
+    ========================= */
+
+    const {
+        error: notificationError
+    } =
+        await supabase
+        .from("notifications")
+        .insert({
+
+            user_id:
+                targetId,
+
+            sender_id:
+                currentUser.id,
+
+            type:
+                "follow",
+
+            message:
+                senderName +
+                " started following you"
+
+        });
+
+
+    if(notificationError){
+
+        console.log(
+            "Notification error:",
+            notificationError
+        );
+
+    }
+
+
+    btn.innerText =
+        "Unfollow";
+
+
+    btn.disabled = false;
+
+
+    await loadStats();
+
+}
+
+
+/* =========================
+   OPEN EDIT MODAL
+========================= */
+
+function openEditModal(){
+
+    document.getElementById(
+        "editFullName"
+    ).value =
+        currentProfile?.full_name || "";
+
+
+    document.getElementById(
+        "editUsername"
+    ).value =
+        currentProfile?.username || "";
+
+
+    document.getElementById(
+        "editBio"
+    ).value =
+        currentProfile?.bio || "";
+
+
+    document.getElementById(
+        "editModal"
+    ).classList.add("show");
+
+}
+
+
+/* =========================
+   CLOSE EDIT
+========================= */
+
+function closeEditModal(){
+
+    document.getElementById(
+        "editModal"
+    ).classList.remove("show");
+
+}
+
+
+document.getElementById(
+    "cancelEditBtn"
+).addEventListener(
+    "click",
+    closeEditModal
+);
+
+
+/* =========================
+   SAVE PROFILE
+========================= */
+
+async function saveProfile(){
+
+    const saveBtn =
+        document.getElementById(
+            "saveProfileBtn"
+        );
+
+
+    const fullName =
+        document.getElementById(
+            "editFullName"
+        ).value.trim();
+
+
+    const username =
+        document.getElementById(
+            "editUsername"
+        ).value.trim()
+        .toLowerCase();
+
+
+    const bio =
+        document.getElementById(
+            "editBio"
+        ).value.trim();
+
+
+    if(!fullName){
+
+        alert(
+            "Full Name enter karein."
+        );
+
+        return;
+
+    }
+
+
+    if(username){
+
+        const usernamePattern =
+            /^[a-z0-9._]+$/;
+
+
+        if(
+            !usernamePattern.test(
+                username
+            )
+        ){
+
+            alert(
+                "Username me sirf a-z, 0-9, dot aur underscore use karein."
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    saveBtn.disabled = true;
+
+    saveBtn.innerText =
+        "Saving...";
+
+
+    /* =========================
+       CHECK USERNAME
+    ========================= */
+
+    if(username){
+
+        const {
+            data: existingUsername,
+            error: usernameError
+        } =
+            await supabase
+            .from("profiles")
+            .select("id")
+            .eq(
+                "username",
+                username
+            )
+            .neq(
+                "id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+
+        if(usernameError){
+
+            console.error(
+                usernameError
+            );
+
+        }
+
+
+        if(existingUsername){
+
+            alert(
+                "Ye username already use ho raha hai."
+            );
+
+            saveBtn.disabled = false;
+
+            saveBtn.innerText =
+                "Save";
+
+            return;
+
+        }
+
+    }
+
+
+    /* =========================
+       UPDATE PROFILE
+    ========================= */
+
+    const {
+        data: updatedProfile,
+        error
+    } =
+        await supabase
+        .from("profiles")
+        .update({
+
+            full_name:
+                fullName,
+
+            username:
+                username,
+
+            bio:
+                bio
+
+        })
+        .eq(
+            "id",
+            currentUser.id
+        )
+        .select()
+        .maybeSingle();
+
+
+    if(error){
+
+        console.error(
+            "Profile update error:",
+            error
+        );
+
+        alert(
+            "Profile update error: " +
+            error.message
+        );
+
+        saveBtn.disabled = false;
+
+        saveBtn.innerText =
+            "Save";
+
+        return;
+
+    }
+
+
+    if(updatedProfile){
+
+        currentProfile =
+            updatedProfile;
+
+    }
+
+
+    /* =========================
+       UPDATE SCREEN
+    ========================= */
+
+    document.getElementById(
+        "fullName"
+    ).innerText =
+        fullName ||
+        "User";
+
+
+    document.getElementById(
+        "username"
+    ).innerText =
+        username
+        ?
+        "@" + username
+        :
+        "";
+
+
+    document.getElementById(
+        "bio"
+    ).innerText =
+        bio;
+
+
+    closeEditModal();
+
+
+    saveBtn.disabled = false;
+
+    saveBtn.innerText =
+        "Save";
+
+
+    alert(
+        "Profile updated successfully! ✅"
+    );
+
+}
+
+
+/* SAVE BUTTON */
+
+document.getElementById(
+    "saveProfileBtn"
+).addEventListener(
+    "click",
+    saveProfile
+);
+
+
+/* =========================
+   UPLOAD PROFILE PHOTO
+========================= */
+
+async function uploadPhoto(event){
+
+    const file =
+        event.target.files[0];
+
+
+    if(!file) return;
+
+
+    if(!file.type.startsWith("image/")){
+
+        alert(
+            "Sirf image upload karein."
+        );
+
+        return;
+
+    }
+
+
+    /* SIZE CHECK */
+
+    if(
+        file.size >
+        5 * 1024 * 1024
+    ){
+
+        alert(
+            "Photo 5MB se kam honi chahiye."
+        );
+
+        return;
+
+    }
+
+
+    const extension =
+        file.name
+        .split(".")
+        .pop()
+        .toLowerCase();
+
+
+    const filePath =
+        currentUser.id +
+        "." +
+        extension;
+
+
+    const {
+        error: uploadError
+    } =
+        await supabase.storage
+        .from("avatars")
+        .upload(
+            filePath,
+            file,
+            {
+                upsert:true,
+                contentType:file.type
+            }
+        );
+
+
+    if(uploadError){
+
+        alert(
+            "Photo upload error: " +
+            uploadError.message
+        );
+
+        return;
+
+    }
+
+
+    const {
+        data
+    } =
+        supabase.storage
+        .from("avatars")
+        .getPublicUrl(
+            filePath
+        );
+
+
+    const imageUrl =
+        data.publicUrl +
+        "?t=" +
+        Date.now();
+
+
+    const {
+        error
+    } =
+        await supabase
+        .from("profiles")
+        .update({
+
+            avatar_url:
+                imageUrl
+
+        })
+        .eq(
+            "id",
+            currentUser.id
+        );
+
+
+    if(error){
+
+        alert(
+            "Profile photo update error: " +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "avatar"
+    ).src =
+        imageUrl;
+
+
+    currentProfile.avatar_url =
+        imageUrl;
+
+
+    alert(
+        "Profile photo updated! ✅"
+    );
+
+}
+
+
+/* =========================
+   LOAD USER POSTS
+========================= */
+
+async function loadUserPosts(){
+
+    const container =
+        document.getElementById(
+            "userPosts"
+        );
+
+
+    container.innerHTML = `
+        <p class="profile-message">
+            Loading posts...
+        </p>
+    `;
+
+
+    const {
+        data: posts,
+        error
+    } =
+        await supabase
+        .from("posts")
+        .select("*")
+        .eq(
+            "user_id",
+            targetId
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+
+    if(error){
+
+        console.error(
+            "Posts loading error:",
+            error
+        );
+
+
+        container.innerHTML = `
+            <p class="profile-message">
+                Posts load nahi ho rahi hain.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    if(
+        !posts ||
+        posts.length === 0
+    ){
+
+        container.innerHTML = `
+            <p class="profile-message">
+                📭 No posts yet.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    posts.forEach(post => {
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.className =
+            "user-post";
+
+
+        const text =
+            escapeHTML(
+                post.content || ""
+            );
+
+
+        div.innerHTML = `
+
+            ${
+                text
+                ?
+                `<p>${text}</p>`
+                :
+                ""
+            }
+
+            ${
+                post.image_url
+                ?
+                `
+                <img
+                    src="${post.image_url}"
+                    alt="Post"
+                    loading="lazy"
+                >
+                `
+                :
+                ""
+            }
+
+            <small style="
+                display:block;
+                margin-top:10px;
+                color:#777;
+            ">
+                ${formatDate(
+                    post.created_at
+                )}
+            </small>
+
+        `;
+
+
+        container.appendChild(
+            div
+        );
+
+    });
+
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+window.openFollowers =
+function(){
+
+    window.location.href =
+        "followers.html?tab=followers&user=" +
+        encodeURIComponent(
+            targetId
+        );
+
+};
+
+
+window.openFollowing =
+function(){
+
+    window.location.href =
+        "followers.html?tab=following&user=" +
+        encodeURIComponent(
+            targetId
+        );
+
+};
+
+
+window.openPosts =
+function(){
+
+    document.getElementById(
+        "userPosts"
+    ).scrollIntoView({
+        behavior:"smooth"
+    });
+
+};
+
+
+/* =========================
+   DATE
+========================= */
+
+function formatDate(date){
+
+    if(!date) return "";
+
+
+    try{
+
+        return new Date(date)
+        .toLocaleString(
+            "en-IN",
+            {
+                dateStyle:"medium",
+                timeStyle:"short"
+            }
+        );
+
+    }catch{
+
+        return "";
+
+    }
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHTML(text){
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.innerText =
+        text;
+
+
+    return div.innerHTML;
+
+}
+
+
+/* =========================
+   CLOSE MODAL OUTSIDE
+========================= */
+
+document.getElementById(
+    "editModal"
+).addEventListener(
+    "click",
+    function(event){
+
+        if(
+            event.target ===
+            this
+        ){
+
+            closeEditModal();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   START
+========================= */
+
+checkUser();
+
+</script>
+
+    <script type="module" src="js/presence.js"></script>
+</body>
+</html>

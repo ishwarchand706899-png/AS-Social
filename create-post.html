@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Create Post | AS-Social</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css">
+
+    <style>
+
+        .create-page {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 25px 15px 100px;
+        }
+
+        .create-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 6px 25px rgba(0,0,0,.08);
+        }
+
+        .create-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .create-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg,#7c3aed,#2563eb);
+            color: white;
+            font-weight: 700;
+            overflow: hidden;
+        }
+
+        .create-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .create-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .create-subtitle {
+            color: #777;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        #postText {
+            width: 100%;
+            min-height: 150px;
+            box-sizing: border-box;
+            padding: 16px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            resize: vertical;
+            font-size: 16px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        #postText:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124,58,237,.08);
+        }
+
+        .image-tools {
+            margin-top: 16px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .upload-label {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .preview-box {
+            margin-top: 18px;
+            display: none;
+            position: relative;
+        }
+
+        .preview-box img {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 15px;
+            background: #f5f5f5;
+        }
+
+        .remove-photo {
+            margin-top: 10px;
+        }
+
+        .publish-area {
+            margin-top: 18px;
+        }
+
+        #publishBtn {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            border-radius: 13px;
+        }
+
+        #message {
+            text-align: center;
+            margin: 15px 0 0;
+            font-size: 14px;
+        }
+
+        .char-count {
+            text-align: right;
+            color: #888;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        @media (max-width: 600px) {
+
+            .create-page {
+                padding: 15px 10px 90px;
+            }
+
+            .create-card {
+                padding: 17px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="profile-body">
+
+
+<header class="topbar">
+
+    <a
+        class="brand"
+        href="./home.html">
+
+        <span class="small-logo">
+            AS
+        </span>
+
+        AS-Social
+
+    </a>
+
+
+    <div class="header-actions">
+
+        <a
+            href="./home.html"
+            class="header-icon">
+
+            🏠
+
+        </a>
+
+        <a
+            href="./notifications.html"
+            class="header-icon">
+
+            🔔
+
+        </a>
+
+        <a
+            href="./profile.html"
+            class="header-icon">
+
+            👤
+
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<main class="create-page">
+
+
+    <section class="create-card">
+
+
+        <!-- USER HEADER -->
+
+        <div class="create-header">
+
+
+            <div
+                id="userAvatar"
+                class="create-avatar">
+
+                AS
+
+            </div>
+
+
+            <div>
+
+                <div
+                    id="userName"
+                    class="create-title">
+
+                    Create Post
+
+                </div>
+
+                <div class="create-subtitle">
+
+                    Share something with AS-Social
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- TEXT -->
+
+        <textarea
+            id="postText"
+            maxlength="5000"
+            placeholder="What's on your mind?">
+        </textarea>
+
+
+        <div
+            id="charCount"
+            class="char-count">
+
+            0 / 5000
+
+        </div>
+
+
+
+        <!-- IMAGE -->
+
+        <div class="image-tools">
+
+
+            <label
+                for="postImage"
+                class="button button-ghost upload-label">
+
+                📷 Select Photo
+
+            </label>
+
+
+            <input
+                type="file"
+                id="postImage"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                hidden>
+
+
+        </div>
+
+
+
+        <!-- PREVIEW -->
+
+        <div
+            id="imagePreview"
+            class="preview-box">
+
+
+            <img
+                id="previewImage"
+                src=""
+                alt="Selected photo">
+
+
+            <button
+                type="button"
+                id="removeImage"
+                class="button button-ghost remove-photo">
+
+                ❌ Remove Photo
+
+            </button>
+
+
+        </div>
+
+
+
+        <!-- PUBLISH -->
+
+        <div class="publish-area">
+
+
+            <button
+                type="button"
+                id="publishBtn"
+                class="button button-primary">
+
+                🚀 Publish Post
+
+            </button>
+
+
+        </div>
+
+
+
+        <p id="message"></p>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav">
+
+
+    <a href="home.html">
+
+        🏠
+        <span>Home</span>
+
+    </a>
+
+
+    <a href="search.html">
+
+        🔍
+        <span>Search</span>
+
+    </a>
+
+
+    <a href="create-post.html">
+
+        ➕
+        <span>Post</span>
+
+    </a>
+
+
+    <a href="notifications.html">
+
+        🔔
+        <span>Alerts</span>
+
+    </a>
+
+
+    <a href="profile.html">
+
+        👤
+        <span>Profile</span>
+
+    </a>
+
+
+</nav>
+
+
+
+<script type="module">
+
+import { supabase } from "./js/supabase.js";
+
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const postText =
+    document.getElementById("postText");
+
+const postImage =
+    document.getElementById("postImage");
+
+const previewBox =
+    document.getElementById("imagePreview");
+
+const previewImage =
+    document.getElementById("previewImage");
+
+const removeImage =
+    document.getElementById("removeImage");
+
+const publishBtn =
+    document.getElementById("publishBtn");
+
+const message =
+    document.getElementById("message");
+
+const userName =
+    document.getElementById("userName");
+
+const userAvatar =
+    document.getElementById("userAvatar");
+
+const charCount =
+    document.getElementById("charCount");
+
+
+let currentUser = null;
+
+let selectedFile = null;
+
+
+
+/* =========================
+   CHECK USER
+========================= */
+
+async function getUser() {
+
+    const {
+        data,
+        error
+    } =
+        await supabase.auth.getUser();
+
+
+    if (
+        error ||
+        !data.user
+    ) {
+
+        window.location.href =
+            "login.html";
+
+        return null;
+
+    }
+
+
+    currentUser =
+        data.user;
+
+
+    return data.user;
+
+}
+
+
+
+/* =========================
+   LOAD PROFILE
+========================= */
+
+async function loadProfile() {
+
+    if (!currentUser) return;
+
+
+    const {
+        data,
+        error
+    } =
+        await supabase
+            .from("profiles")
+            .select(
+                "full_name, username, avatar_url"
+            )
+            .eq(
+                "id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+
+    if (error) {
+
+        console.error(error);
+
+        return;
+
+    }
+
+
+    if (!data) return;
+
+
+    userName.innerText =
+        data.full_name ||
+        data.username ||
+        "AS User";
+
+
+    if (data.avatar_url) {
+
+        userAvatar.innerHTML = `
+            <img
+                src="${escapeAttribute(data.avatar_url)}"
+                alt="Profile photo">
+        `;
+
+    }
+
+}
+
+
+
+/* =========================
+   CHARACTER COUNT
+========================= */
+
+postText.addEventListener(
+    "input",
+    function () {
+
+        charCount.innerText =
+            this.value.length +
+            " / 5000";
+
+    }
+);
+
+
+
+/* =========================
+   IMAGE SELECT
+========================= */
+
+postImage.addEventListener(
+    "change",
+    function () {
+
+
+        const file =
+            this.files[0];
+
+
+        if (!file) return;
+
+
+
+        /* TYPE CHECK */
+
+        if (!file.type.startsWith("image/")) {
+
+            showMessage(
+                "Please select a valid image.",
+                true
+            );
+
+            this.value = "";
+
+            return;
+
+        }
+
+
+
+        /* SIZE CHECK */
+
+        if (
+            file.size >
+            10 * 1024 * 1024
+        ) {
+
+            showMessage(
+                "Photo 10MB se kam honi chahiye.",
+                true
+            );
+
+            this.value = "";
+
+            return;
+
+        }
+
+
+
+        selectedFile =
+            file;
+
+
+
+        /* PREVIEW */
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            function (event) {
+
+                previewImage.src =
+                    event.target.result;
+
+                previewBox.style.display =
+                    "block";
+
+            };
+
+
+        reader.readAsDataURL(file);
+
+
+        showMessage("");
+
+    }
+);
+
+
+
+/* =========================
+   REMOVE IMAGE
+========================= */
+
+removeImage.addEventListener(
+    "click",
+    function () {
+
+        selectedFile =
+            null;
+
+        postImage.value =
+            "";
+
+        previewImage.src =
+            "";
+
+        previewBox.style.display =
+            "none";
+
+    }
+);
+
+
+
+/* =========================
+   PUBLISH
+========================= */
+
+publishBtn.addEventListener(
+    "click",
+    async function () {
+
+
+        if (!currentUser) {
+
+            currentUser =
+                await getUser();
+
+        }
+
+
+        if (!currentUser)
+            return;
+
+
+
+        const text =
+            postText.value.trim();
+
+
+
+        /* TEXT OR IMAGE REQUIRED */
+
+        if (
+            !text &&
+            !selectedFile
+        ) {
+
+            showMessage(
+                "Post me text ya photo add karein.",
+                true
+            );
+
+            return;
+
+        }
+
+
+
+        publishBtn.disabled =
+            true;
+
+        publishBtn.innerText =
+            "⏳ Publishing...";
+
+        showMessage(
+            "Please wait..."
+        );
+
+
+
+        let imageUrl =
+            null;
+
+
+
+        /* =========================
+           UPLOAD IMAGE
+        ========================= */
+
+        if (selectedFile) {
+
+
+            const extension =
+                selectedFile.name
+                    .split(".")
+                    .pop()
+                    .toLowerCase();
+
+
+            const fileName =
+                currentUser.id +
+                "_" +
+                Date.now() +
+                "." +
+                extension;
+
+
+            const filePath =
+                "posts/" +
+                fileName;
+
+
+
+            const {
+                error:
+                uploadError
+            } =
+                await supabase
+                    .storage
+                    .from("avatars")
+                    .upload(
+                        filePath,
+                        selectedFile,
+                        {
+                            contentType:
+                                selectedFile.type,
+                            upsert: false
+                        }
+                    );
+
+
+
+            if (uploadError) {
+
+                console.error(
+                    uploadError
+                );
+
+                showMessage(
+                    "Photo upload error: " +
+                    uploadError.message,
+                    true
+                );
+
+                resetPublishButton();
+
+                return;
+
+            }
+
+
+
+            /* PUBLIC URL */
+
+            const {
+                data:
+                publicData
+            } =
+                supabase
+                    .storage
+                    .from("avatars")
+                    .getPublicUrl(
+                        filePath
+                    );
+
+
+            imageUrl =
+                publicData.publicUrl;
+
+        }
+
+
+
+        /* =========================
+           INSERT POST
+        ========================= */
+
+        const {
+            error:
+            postError
+        } =
+            await supabase
+                .from("posts")
+                .insert({
+
+                    user_id:
+                        currentUser.id,
+
+                    content:
+                        text,
+
+                    image_url:
+                        imageUrl
+
+                });
+
+
+
+        if (postError) {
+
+            console.error(
+                postError
+            );
+
+            showMessage(
+                "Post error: " +
+                postError.message,
+                true
+            );
+
+            resetPublishButton();
+
+            return;
+
+        }
+
+
+
+        /* =========================
+           SUCCESS
+        ========================= */
+
+        showMessage(
+            "✅ Post published successfully!"
+        );
+
+
+        postText.value =
+            "";
+
+        postImage.value =
+            "";
+
+        selectedFile =
+            null;
+
+        previewImage.src =
+            "";
+
+        previewBox.style.display =
+            "none";
+
+        charCount.innerText =
+            "0 / 5000";
+
+
+        setTimeout(
+            () => {
+
+                window.location.href =
+                    "home.html";
+
+            },
+            800
+        );
+
+    }
+);
+
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+function showMessage(
+    text,
+    isError = false
+) {
+
+    message.innerText =
+        text;
+
+    message.style.color =
+        isError
+            ? "#dc2626"
+            : "#16a34a";
+
+}
+
+
+
+/* =========================
+   RESET BUTTON
+========================= */
+
+function resetPublishButton() {
+
+    publishBtn.disabled =
+        false;
+
+    publishBtn.innerText =
+        "🚀 Publish Post";
+
+}
+
+
+
+/* =========================
+   ESCAPE ATTRIBUTE
+========================= */
+
+function escapeAttribute(text) {
+
+    return String(
+        text ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        );
+
+}
+
+
+
+/* =========================
+   START
+========================= */
+
+const user =
+    await getUser();
+
+
+if (user) {
+
+    await loadProfile();
+
+}
+
+</script>
+
+
+    <script type="module" src="js/presence.js"></script>
+</body>
+</html>

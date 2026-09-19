@@ -1,0 +1,23 @@
+
+/* AS-SOCIAL ONLINE STATUS */
+[data-online-user] {
+    position: relative;
+}
+
+[data-online-user].online {
+    display: inline-flex;
+}
+
+.as-online {
+    /* Current logged-in user is online */
+}
+
+.as-online-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #22c55e;
+    border: 2px solid #fff;
+    display: inline-block;
+    box-shadow: 0 1px 4px rgba(0,0,0,.25);
+}

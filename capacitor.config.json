@@ -1,0 +1,9 @@
+{
+  "appId": "com.laddu.asocial",
+  "appName": "AS-Social",
+  "webDir": "www",
+  "server": {
+    "url": "https://ladduas.netlify.app",
+    "cleartext": false
+  }
+}

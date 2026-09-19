@@ -1,0 +1,811 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>AS Social - Chats</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f6f8;
+      color: #222;
+    }
+
+    header {
+      height: 60px;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #111;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .header-actions a,
+    .logout-btn {
+      text-decoration: none;
+      border: none;
+      background: #f1f2f4;
+      color: #222;
+      padding: 8px 13px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .logout-btn {
+      background: #111;
+      color: #fff;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 700px;
+      margin: 25px auto;
+      padding: 0 15px 90px;
+    }
+
+    .title {
+      font-size: 25px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .search-box {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 12px;
+      padding: 13px 15px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .search-box input:focus {
+      border-color: #888;
+    }
+
+    #chatList {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #e5e5e5;
+    }
+
+    .chat-item {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 14px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .chat-item:last-child {
+      border-bottom: none;
+    }
+
+    .chat-item:hover {
+      background: #f7f7f7;
+    }
+
+    .avatar {
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #ddd;
+    }
+
+    .chat-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .chat-name {
+      font-size: 16px;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-time {
+      font-size: 11px;
+      color: #999;
+      white-space: nowrap;
+    }
+
+    .chat-username {
+      font-size: 13px;
+      color: #777;
+      margin-top: 2px;
+    }
+
+    .last-message {
+      font-size: 13px;
+      color: #666;
+      margin-top: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .empty {
+      padding: 45px 20px;
+      text-align: center;
+      color: #777;
+      font-size: 15px;
+    }
+
+    .loading {
+      padding: 35px;
+      text-align: center;
+      color: #777;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 62px;
+      background: #fff;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 200;
+    }
+
+    .bottom-nav a {
+      text-decoration: none;
+      color: #555;
+      font-size: 22px;
+      width: 25%;
+      text-align: center;
+    }
+
+    .bottom-nav a.active {
+      color: #000;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 0 12px;
+      }
+
+      .logo {
+        font-size: 19px;
+      }
+
+      .header-actions a {
+        padding: 7px 9px;
+        font-size: 13px;
+      }
+
+      .container {
+        margin-top: 18px;
+      }
+
+      .title {
+        font-size: 22px;
+      }
+
+      .avatar {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">AS Social</div>
+
+  <div class="header-actions">
+    <a href="home.html">🏠 Home</a>
+    <a href="search.html">🔍 Search</a>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="title">💬 Chats</div>
+
+  <div class="search-box">
+    <input
+      type="text"
+      id="chatSearch"
+      placeholder="Search chats..."
+      autocomplete="off"
+    >
+  </div>
+
+  <div id="chatList">
+    <div class="loading">Loading chats...</div>
+  </div>
+
+</div>
+
+<nav class="bottom-nav">
+  <a href="home.html">🏠</a>
+  <a href="search.html">🔍</a>
+  <a href="chats.html" class="active">💬</a>
+  <a href="notifications.html">🔔</a>
+  <a href="profile.html">👤</a>
+</nav>
+
+<script type="module">
+
+import { supabase } from "./js/supabase.js";
+
+const chatList = document.getElementById("chatList");
+const chatSearch = document.getElementById("chatSearch");
+const logoutBtn = document.getElementById("logoutBtn");
+
+let currentUser = null;
+let allChats = [];
+let realtimeChannel = null;
+
+
+/* =========================
+   AUTH
+========================= */
+
+async function checkAuth() {
+
+  const {
+    data: { user },
+    error
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  currentUser = user;
+
+  await loadChats();
+  setupRealtime();
+}
+
+
+/* =========================
+   LOAD CHATS
+========================= */
+
+async function loadChats() {
+
+  chatList.innerHTML = `
+    <div class="loading">Loading chats...</div>
+  `;
+
+  try {
+
+    const { data: messages, error } = await supabase
+      .from("messages")
+      .select("id,sender_id,receiver_id,message,created_at")
+      .or(
+        `sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`
+      )
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error(error);
+
+      chatList.innerHTML = `
+        <div class="empty">
+          Unable to load chats.
+        </div>
+      `;
+
+      return;
+    }
+
+    if (!messages || messages.length === 0) {
+
+      allChats = [];
+
+      renderChats();
+
+      return;
+    }
+
+
+    /* =========================
+       GET LATEST MESSAGE
+       FOR EACH USER
+    ========================= */
+
+    const chatMap = new Map();
+
+    for (const msg of messages) {
+
+      const otherUserId =
+        msg.sender_id === currentUser.id
+          ? msg.receiver_id
+          : msg.sender_id;
+
+      if (!otherUserId) continue;
+
+      if (!chatMap.has(otherUserId)) {
+
+        chatMap.set(otherUserId, {
+          userId: otherUserId,
+          message: msg.message || "",
+          created_at: msg.created_at
+        });
+
+      }
+
+    }
+
+
+    const userIds = [...chatMap.keys()];
+
+    if (userIds.length === 0) {
+
+      allChats = [];
+
+      renderChats();
+
+      return;
+    }
+
+
+    /* =========================
+       LOAD PROFILES
+    ========================= */
+
+    const { data: profiles, error: profileError } =
+      await supabase
+        .from("profiles")
+        .select("id,username,full_name,avatar_url")
+        .in("id", userIds);
+
+    if (profileError) {
+      console.error(profileError);
+    }
+
+
+    const profileMap = new Map();
+
+    (profiles || []).forEach(profile => {
+      profileMap.set(profile.id, profile);
+    });
+
+
+    /* =========================
+       CREATE CHAT ARRAY
+    ========================= */
+
+    allChats = [...chatMap.values()]
+      .map(chat => {
+
+        const profile = profileMap.get(chat.userId);
+
+        return {
+          ...chat,
+          profile: profile || {
+            id: chat.userId,
+            username: "User",
+            full_name: "User",
+            avatar_url: ""
+          }
+        };
+
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.created_at) -
+          new Date(a.created_at)
+      );
+
+
+    renderChats();
+
+  } catch (err) {
+
+    console.error(err);
+
+    chatList.innerHTML = `
+      <div class="empty">
+        Something went wrong.
+      </div>
+    `;
+
+  }
+}
+
+
+/* =========================
+   RENDER CHATS
+========================= */
+
+function renderChats() {
+
+  const search =
+    chatSearch.value
+      .trim()
+      .toLowerCase();
+
+
+  const filtered = allChats.filter(chat => {
+
+    if (!search) return true;
+
+    const name =
+      chat.profile?.full_name ||
+      "";
+
+    const username =
+      chat.profile?.username ||
+      "";
+
+    const message =
+      chat.message ||
+      "";
+
+    return (
+      name.toLowerCase().includes(search) ||
+      username.toLowerCase().includes(search) ||
+      message.toLowerCase().includes(search)
+    );
+
+  });
+
+
+  if (filtered.length === 0) {
+
+    chatList.innerHTML = `
+      <div class="empty">
+        ${
+          search
+            ? "No chats found."
+            : "No chats yet."
+        }
+      </div>
+    `;
+
+    return;
+  }
+
+
+  chatList.innerHTML = "";
+
+
+  filtered.forEach(chat => {
+
+    const profile = chat.profile;
+
+    const item = document.createElement("div");
+
+    item.className = "chat-item";
+
+    const avatar =
+      profile.avatar_url ||
+      "https://via.placeholder.com/100";
+
+
+    const name =
+      profile.full_name ||
+      profile.username ||
+      "User";
+
+
+    const username =
+      profile.username
+        ? "@" + profile.username
+        : "";
+
+
+    const time =
+      formatTime(chat.created_at);
+
+
+    const message =
+      chat.message ||
+      "Message";
+
+
+    item.innerHTML = `
+
+      <img
+        class="avatar"
+        src="${escapeHtml(avatar)}"
+        alt="Avatar"
+        onerror="this.src='https://via.placeholder.com/100'"
+      >
+
+      <div class="chat-info">
+
+        <div class="chat-top">
+
+          <div class="chat-name">
+            ${escapeHtml(name)}
+          </div>
+
+          <div class="chat-time">
+            ${time}
+          </div>
+
+        </div>
+
+        <div class="chat-username">
+          ${escapeHtml(username)}
+        </div>
+
+        <div class="last-message">
+          ${escapeHtml(message)}
+        </div>
+
+      </div>
+    `;
+
+
+    item.addEventListener("click", () => {
+
+      window.location.href =
+        `chat.html?user=${encodeURIComponent(chat.userId)}`;
+
+    });
+
+
+    chatList.appendChild(item);
+
+  });
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+chatSearch.addEventListener(
+  "input",
+  renderChats
+);
+
+
+/* =========================
+   REALTIME
+========================= */
+
+function setupRealtime() {
+
+  if (realtimeChannel) {
+
+    supabase.removeChannel(
+      realtimeChannel
+    );
+
+  }
+
+
+  realtimeChannel =
+    supabase
+      .channel("chat-list-realtime")
+
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages"
+        },
+        payload => {
+
+          const msg = payload.new;
+
+          if (!msg) return;
+
+
+          if (
+            msg.sender_id === currentUser.id ||
+            msg.receiver_id === currentUser.id
+          ) {
+
+            loadChats();
+
+          }
+
+        }
+      )
+
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "messages"
+        },
+        payload => {
+
+          const msg = payload.new;
+
+          if (!msg) return;
+
+
+          if (
+            msg.sender_id === currentUser.id ||
+            msg.receiver_id === currentUser.id
+          ) {
+
+            loadChats();
+
+          }
+
+        }
+      )
+
+      .subscribe();
+
+}
+
+
+/* =========================
+   TIME
+========================= */
+
+function formatTime(dateString) {
+
+  if (!dateString) return "";
+
+  const date =
+    new Date(dateString);
+
+  const now =
+    new Date();
+
+
+  const diff =
+    now - date;
+
+
+  const minutes =
+    Math.floor(diff / 60000);
+
+
+  if (minutes < 1)
+    return "now";
+
+
+  if (minutes < 60)
+    return `${minutes}m`;
+
+
+  const hours =
+    Math.floor(minutes / 60);
+
+
+  if (hours < 24)
+    return `${hours}h`;
+
+
+  const days =
+    Math.floor(hours / 24);
+
+
+  if (days < 7)
+    return `${days}d`;
+
+
+  return date.toLocaleDateString(
+    "en-IN",
+    {
+      day: "numeric",
+      month: "short"
+    }
+  );
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHtml(value) {
+
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+logoutBtn.addEventListener(
+  "click",
+  async () => {
+
+    await supabase.auth.signOut();
+
+    window.location.href =
+      "login.html";
+
+  }
+);
+
+
+/* =========================
+   CLEANUP
+========================= */
+
+window.addEventListener(
+  "beforeunload",
+  () => {
+
+    if (realtimeChannel) {
+
+      supabase.removeChannel(
+        realtimeChannel
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================
+   START
+========================= */
+
+checkAuth();
+
+</script>
+
+</body>
+</html>
+```

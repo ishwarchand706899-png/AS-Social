@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Story | AS-Social</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background: #f7f7fb; padding: 20px; display: flex; justify-content: center; }
+        .card { background: white; padding: 24px; border-radius: 20px; max-width: 500px; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        h2 { font-size: 22px; color: #111; margin-bottom: 16px; }
+        textarea { width: 100%; height: 100px; padding: 12px; border: 1px solid #ddd; border-radius: 12px; resize: none; outline: none; margin-bottom: 15px; font-size: 15px; }
+        input[type="file"] { margin-bottom: 15px; width: 100%; }
+        .preview { max-width: 100%; max-height: 250px; border-radius: 12px; display: none; margin-bottom: 15px; }
+        button { width: 100%; padding: 14px; background: linear-gradient(135deg,#7c3aed,#ec4899); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .back-btn { background: none; color: #7c3aed; border: none; text-align: left; padding: 0; margin-bottom: 15px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <button class="back-btn" onclick="location.href='home.html'">← Back to Home</button>
+    <h2>Add New Story</h2>
+    
+    <textarea id="storyText" placeholder="Write something for your story..."></textarea>
+    
+    <input type="file" id="storyImage" accept="image/*" onchange="previewImage(event)">
+    <img id="imagePreview" class="preview" alt="Preview">
+
+    <button id="postBtn" onclick="uploadStory()">Share Story</button>
+</div>
+
+<script type="module">
+    import { supabase } from './js/supabase.js';
+
+    window.previewImage = function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById("imagePreview");
+                img.src = e.target.result;
+                img.style.display = "block";
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    window.uploadStory = async function() {
+        const text = document.getElementById("storyText").value.trim();
+        const fileInput = document.getElementById("storyImage");
+        const file = fileInput.files[0];
+        const btn = document.getElementById("postBtn");
+
+        if (!text && !file) {
+            alert("Please write something or select an image!");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Uploading...";
+
+        try {
+            // Get current user
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                alert("Please login first!");
+                location.href = "login.html";
+                return;
+            }
+
+            let mediaUrl = null;
+
+            // Upload image if selected
+            if (file) {
+                const fileName = `story_${Date.now()}_${file.name}`;
+                const { data: storageData, error: storageError } = await supabase.storage
+                    .from('stories')
+                    .upload(fileName, file);
+
+                if (storageError) throw storageError;
+
+                const { data: publicUrlData } = supabase.storage
+                    .from('stories')
+                    .getPublicUrl(fileName);
+
+                mediaUrl = publicUrlData.publicUrl;
+            }
+
+            // Get profile username
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('username')
+                .eq('id', user.id)
+                .single();
+
+            const username = profile ? profile.username : (user.email ? user.email.split('@')[0] : 'User');
+
+            // Insert into Supabase database
+            const { error: insertError } = await supabase
+                .from('stories')
+                .insert([
+                    {
+                        user_id: user.id,
+                        username: username,
+                        media_url: mediaUrl,
+                        content: text
+                    }
+                ]);
+
+            if (insertError) throw insertError;
+
+            alert("Story uploaded successfully!");
+            location.href = "home.html";
+
+        } catch (err) {
+            console.error("Error uploading story:", err);
+            alert("Failed to upload story: " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Share Story";
+        }
+    }
+</script>
+
+</body>
+</html>

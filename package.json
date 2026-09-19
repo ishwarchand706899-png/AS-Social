@@ -1,0 +1,26 @@
+{
+  "scripts": {
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
+    "@react-native-async-storage/async-storage": "^3.1.1",
+    "@react-navigation/native": "^7.4.1",
+    "@react-navigation/native-stack": "^7.19.2",
+    "@supabase/supabase-js": "^2.116.0"
+  },
+  "name": "as_social",
+  "version": "1.0.0",
+  "description": "",
+  "main": "presence.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

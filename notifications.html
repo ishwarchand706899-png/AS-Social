@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | AS-Social</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="notifications-body">
+    <header class="topbar">
+        <a class="brand" href="home.html">
+            <span class="small-logo">AS</span>
+            AS-Social
+        </a>
+        <div class="notifications-header-actions">
+            <a href="home.html">Home</a>
+            <a href="search.html">Search</a>
+            <button id="logoutBtn" type="button">Logout</button>
+        </div>
+    </header>
+
+    <main class="notifications-page">
+        <section class="notifications-heading">
+            <span class="section-kicker">Stay in the loop</span>
+            <h1>Notifications</h1>
+            <p>See who is joining your circle and responding to your posts.</p>
+        </section>
+
+        <section class="notifications-card" aria-live="polite">
+            <div class="notifications-card-heading">
+                <h2>Recent activity</h2>
+                <span id="notificationCount">0</span>
+            </div>
+            <div id="notificationList" class="notification-list">
+                <p class="notification-message">Loading activity...</p>
+            </div>
+        </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Mobile navigation">
+        <a href="home.html">🏠 <span>Home</span></a>
+        <a href="search.html">🔍 <span>Search</span></a>
+        <a href="notifications.html">🔔 <span>Alerts</span></a>
+        <a href="profile.html">👤 <span>Profile</span></a>
+    </nav>
+
+    <script type="module" src="js/notifications.js"></script>
+    <script type="module" src="js/presence.js"></script>
+</body>
+</html>

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Search Users | AS-Social</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        .search-page {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 25px 15px 100px;
+        }
+
+        .search-box-card {
+            background: white;
+            padding: 22px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.08);
+            margin-bottom: 20px;
+        }
+
+        .search-box-card h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        #searchInput {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 15px 16px;
+            border: 1px solid #ddd;
+            border-radius: 14px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        #searchInput:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124,58,237,.10);
+        }
+
+        .search-result-card {
+            background: white;
+            padding: 16px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,.07);
+        }
+
+        .search-user-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .search-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .search-avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #eee;
+        }
+
+        .search-avatar-default {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,#7c3aed,#2563eb);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .search-user-name {
+            font-size: 16px;
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        .search-username {
+            display: block;
+            color: #777;
+            margin-top: 4px;
+            font-size: 13px;
+        }
+
+        .search-actions {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+        }
+
+        .search-btn {
+            border: none;
+            border-radius: 10px;
+            padding: 9px 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .view-btn {
+            background: #111827;
+            color: white;
+        }
+
+        .follow-btn {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .following-btn {
+            background: #eee;
+            color: #333;
+        }
+
+        .search-message {
+            text-align: center;
+            color: #777;
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+        }
+
+        @media (max-width: 600px) {
+
+            .search-page {
+                padding: 15px 10px 90px;
+            }
+
+            .search-box-card {
+                padding: 17px;
+            }
+
+            .search-user-row {
+                align-items: flex-start;
+            }
+
+            .search-actions {
+                flex-direction: column;
+            }
+
+            .search-btn {
+                width: 90px;
+            }
+
+            .search-avatar,
+            .search-avatar-default {
+                width: 50px;
+                height: 50px;
+            }
+
+            .search-user-name {
+                font-size: 14px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="topbar">
+
+    <div class="brand">
+        <span class="small-logo">AS</span>
+        AS-Social
+    </div>
+
+    <a href="home.html">
+        🏠 Home
+    </a>
+
+</header>
+
+
+
+<main class="search-page">
+
+
+    <div class="search-box-card">
+
+        <h2>🔍 Search Users</h2>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search username or name..."
+            autocomplete="off">
+
+    </div>
+
+
+    <div id="searchResults">
+
+        <div class="search-message">
+            User search karne ke liye naam type karein.
+        </div>
+
+    </div>
+
+
+</main>
+
+
+
+<nav class="bottom-nav">
+
+    <a href="home.html">
+        🏠
+        <span>Home</span>
+    </a>
+
+    <a href="search.html">
+        🔍
+        <span>Search</span>
+    </a>
+
+    <a href="notifications.html">
+        🔔
+        <span>Alerts</span>
+    </a>
+
+    <a href="profile.html">
+        👤
+        <span>Profile</span>
+    </a>
+
+</nav>
+
+
+
+<script type="module">
+
+import { supabase } from "./js/supabase.js";
+
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const results =
+    document.getElementById("searchResults");
+
+
+let currentUser = null;
+
+
+
+/* =========================
+   CHECK LOGIN
+========================= */
+
+async function checkUser() {
+
+    const { data, error } =
+        await supabase.auth.getUser();
+
+    if (error || !data.user) {
+
+        window.location.href = "login.html";
+
+        return null;
+    }
+
+    currentUser = data.user;
+
+    return data.user;
+}
+
+
+
+/* =========================
+   SEARCH USERS
+========================= */
+
+let searchTimer = null;
+
+searchInput.addEventListener("input", function () {
+
+    clearTimeout(searchTimer);
+
+    const search =
+        this.value.trim();
+
+    searchTimer = setTimeout(() => {
+
+        searchUsers(search);
+
+    }, 300);
+
+});
+
+
+
+async function searchUsers(search) {
+
+
+    if (!search) {
+
+        results.innerHTML = `
+            <div class="search-message">
+                User search karne ke liye naam type karein.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    results.innerHTML = `
+        <div class="search-message">
+            🔍 Searching...
+        </div>
+    `;
+
+
+    const safeSearch =
+        search
+            .replace(/,/g, "")
+            .replace(/\./g, "");
+
+
+    const { data, error } =
+        await supabase
+            .from("profiles")
+            .select(`
+                id,
+                username,
+                full_name,
+                avatar_url
+            `)
+            .or(
+                `username.ilike.%${safeSearch}%,full_name.ilike.%${safeSearch}%`
+            )
+            .limit(20);
+
+
+    if (error) {
+
+        console.error("Search error:", error);
+
+        results.innerHTML = `
+            <div class="search-message">
+                ❌ Search error: ${escapeHTML(error.message)}
+            </div>
+        `;
+
+        return;
+    }
+
+
+    const users =
+        (data || []).filter(
+            user =>
+                user.id !== currentUser.id
+        );
+
+
+    if (users.length === 0) {
+
+        results.innerHTML = `
+            <div class="search-message">
+                😔 कोई user नहीं मिला.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    /*
+       Check following status
+    */
+
+    const userIds =
+        users.map(user => user.id);
+
+
+    const { data: followingData } =
+        await supabase
+            .from("followers")
+            .select("following_id")
+            .eq("follower_id", currentUser.id)
+            .in("following_id", userIds);
+
+
+    const followingIds =
+        new Set(
+            (followingData || [])
+                .map(row => row.following_id)
+        );
+
+
+    results.innerHTML = "";
+
+
+    users.forEach(user => {
+
+        const isFollowing =
+            followingIds.has(user.id);
+
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "search-result-card";
+
+
+        let avatarHTML = "";
+
+
+        if (user.avatar_url) {
+
+            avatarHTML = `
+                <img
+                    src="${escapeAttribute(user.avatar_url)}"
+                    class="search-avatar"
+                    alt="Profile photo">
+            `;
+
+        } else {
+
+            avatarHTML = `
+                <div class="search-avatar-default">
+                    AS
+                </div>
+            `;
+
+        }
+
+
+        card.innerHTML = `
+
+            <div class="search-user-row">
+
+
+                <div class="search-user-info">
+
+                    ${avatarHTML}
+
+                    <div>
+
+                        <div class="search-user-name">
+                            ${escapeHTML(
+                                user.full_name ||
+                                "AS User"
+                            )}
+                        </div>
+
+                        <span class="search-username">
+                            @${escapeHTML(
+                                user.username || ""
+                            )}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="search-actions">
+
+                    <button
+                        class="search-btn view-btn"
+                        data-profile="${user.id}">
+
+                        View
+
+                    </button>
+
+
+                    <button
+                        class="search-btn ${
+                            isFollowing
+                                ? "following-btn"
+                                : "follow-btn"
+                        }"
+                        data-follow="${user.id}"
+                        data-following="${isFollowing}">
+
+                        ${
+                            isFollowing
+                                ? "Following"
+                                : "Follow"
+                        }
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        `;
+
+
+        results.appendChild(card);
+
+    });
+
+
+    /*
+       View profile buttons
+    */
+
+    document
+        .querySelectorAll("[data-profile]")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    openProfile(
+                        button.dataset.profile
+                    );
+
+                }
+            );
+
+        });
+
+
+    /*
+       Follow buttons
+    */
+
+    document
+        .querySelectorAll("[data-follow]")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    toggleFollow(
+                        button.dataset.follow,
+                        button
+                    );
+
+                }
+            );
+
+        });
+
+}
+
+
+
+/* =========================
+   FOLLOW / UNFOLLOW
+========================= */
+
+async function toggleFollow(
+    targetId,
+    button
+) {
+
+
+    const isFollowing =
+        button.dataset.following === "true";
+
+
+    button.disabled = true;
+
+
+    if (isFollowing) {
+
+
+        const { error } =
+            await supabase
+                .from("followers")
+                .delete()
+                .eq(
+                    "follower_id",
+                    currentUser.id
+                )
+                .eq(
+                    "following_id",
+                    targetId
+                );
+
+
+        if (error) {
+
+            console.error(error);
+
+            alert(
+                "Unfollow error: " +
+                error.message
+            );
+
+            button.disabled = false;
+
+            return;
+        }
+
+
+        button.innerText =
+            "Follow";
+
+        button.classList.remove(
+            "following-btn"
+        );
+
+        button.classList.add(
+            "follow-btn"
+        );
+
+        button.dataset.following =
+            "false";
+
+
+    } else {
+
+
+        const { error } =
+            await supabase
+                .from("followers")
+                .insert({
+
+                    follower_id:
+                        currentUser.id,
+
+                    following_id:
+                        targetId
+
+                });
+
+
+        if (error) {
+
+            console.error(error);
+
+            alert(
+                "Follow error: " +
+                error.message
+            );
+
+            button.disabled = false;
+
+            return;
+        }
+
+
+        button.innerText =
+            "Following";
+
+        button.classList.remove(
+            "follow-btn"
+        );
+
+        button.classList.add(
+            "following-btn"
+        );
+
+        button.dataset.following =
+            "true";
+
+
+        /*
+           Get current user profile
+        */
+
+        const { data: senderProfile } =
+            await supabase
+                .from("profiles")
+                .select(
+                    "full_name, username"
+                )
+                .eq(
+                    "id",
+                    currentUser.id
+                )
+                .maybeSingle();
+
+
+        const senderName =
+            senderProfile?.full_name ||
+            senderProfile?.username ||
+            "Someone";
+
+
+        /*
+           Create notification
+        */
+
+        const { error: notificationError } =
+            await supabase
+                .from("notifications")
+                .insert({
+
+                    user_id:
+                        targetId,
+
+                    sender_id:
+                        currentUser.id,
+
+                    type:
+                        "follow",
+
+                    message:
+                        senderName +
+                        " started following you"
+
+                });
+
+
+        if (notificationError) {
+
+            console.error(
+                "Notification error:",
+                notificationError
+            );
+
+        }
+
+    }
+
+
+    button.disabled = false;
+
+}
+
+
+
+/* =========================
+   OPEN PROFILE
+========================= */
+
+function openProfile(userId) {
+
+    window.location.href =
+        "profile.html?user=" +
+        encodeURIComponent(userId);
+
+}
+
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        text ?? "";
+
+    return div.innerHTML;
+
+}
+
+
+
+/* =========================
+   ESCAPE ATTRIBUTE
+========================= */
+
+function escapeAttribute(text) {
+
+    return String(text ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+}
+
+
+
+/* =========================
+   START
+========================= */
+
+checkUser();
+
+</script>
+
+
+    <script type="module" src="js/presence.js"></script>
+</body>
+
+</html>

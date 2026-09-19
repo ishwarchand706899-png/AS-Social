@@ -1,0 +1,1071 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AS Social - Accounts</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+        }
+
+        .header {
+            background: #111;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 25px auto;
+            padding: 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        }
+
+        h3 {
+            margin-top: 0;
+        }
+
+        .account {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .account:last-child {
+            border-bottom: none;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #ddd;
+        }
+
+        .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .email {
+            color: #777;
+            font-size: 13px;
+            margin-top: 4px;
+            word-break: break-all;
+        }
+
+        .current {
+            color: #16803c;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        button {
+            border: none;
+            border-radius: 9px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .switch-btn {
+            background: #111;
+            color: white;
+        }
+
+        .add-btn {
+            width: 100%;
+            background: #111;
+            color: white;
+            padding: 14px;
+            font-size: 15px;
+        }
+
+        .back-btn {
+            width: 100%;
+            background: #eee;
+            color: #111;
+            padding: 13px;
+            margin-top: 10px;
+        }
+
+        .delete-btn {
+            background: #e53935;
+            color: white;
+            margin-left: 5px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 15px;
+        }
+
+        #otpBox {
+            display: none;
+        }
+
+        .otp-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .otp-email {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            word-break: break-all;
+        }
+
+        #otpInput {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 20px;
+            text-align: center;
+            letter-spacing: 7px;
+            outline: none;
+        }
+
+        .verify-btn {
+            width: 100%;
+            background: #16803c;
+            color: white;
+            margin-top: 12px;
+            padding: 14px;
+        }
+
+        .resend-btn {
+            width: 100%;
+            background: #eee;
+            color: #111;
+            margin-top: 8px;
+            padding: 12px;
+        }
+
+        .cancel-btn {
+            width: 100%;
+            background: #e53935;
+            color: white;
+            margin-top: 8px;
+            padding: 12px;
+        }
+
+        #status {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    👥 AS Social Accounts
+</div>
+
+<div class="container">
+
+    <!-- Accounts -->
+
+    <div class="card" id="accountsCard">
+
+        <h3>My Accounts</h3>
+
+        <div id="accounts">
+            <div class="empty">
+                Loading accounts...
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- OTP -->
+
+    <div class="card" id="otpBox">
+
+        <div class="otp-title">
+            🔐 Email OTP Verification
+        </div>
+
+        <div class="otp-email" id="otpEmail">
+        </div>
+
+        <input
+            type="text"
+            id="otpInput"
+            placeholder="000000"
+            maxlength="6"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+        >
+
+        <button
+            class="verify-btn"
+            id="verifyOtp"
+        >
+            ✅ Verify OTP & Login
+        </button>
+
+        <button
+            class="resend-btn"
+            id="resendOtp"
+        >
+            🔄 Resend OTP
+        </button>
+
+        <button
+            class="cancel-btn"
+            id="cancelOtp"
+        >
+            ✕ Cancel
+        </button>
+
+        <div id="status"></div>
+
+    </div>
+
+
+    <!-- Buttons -->
+
+    <div class="card" id="buttonsCard">
+
+        <button
+            class="add-btn"
+            id="addAccount"
+        >
+            ➕ Add Another Account
+        </button>
+
+        <button
+            class="back-btn"
+            id="backHome"
+        >
+            ← Back to Home
+        </button>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+import { supabase } from "./js/supabase.js";
+
+
+const accountsContainer =
+    document.getElementById("accounts");
+
+
+const accountsCard =
+    document.getElementById("accountsCard");
+
+
+const otpBox =
+    document.getElementById("otpBox");
+
+
+const buttonsCard =
+    document.getElementById("buttonsCard");
+
+
+const otpEmail =
+    document.getElementById("otpEmail");
+
+
+const otpInput =
+    document.getElementById("otpInput");
+
+
+const statusBox =
+    document.getElementById("status");
+
+
+let currentUser = null;
+
+let selectedAccount = null;
+
+
+// --------------------------------------------------
+// CURRENT USER
+// --------------------------------------------------
+
+async function getCurrentUser() {
+
+    const {
+        data,
+        error
+    } = await supabase.auth.getUser();
+
+
+    if (error || !data.user) {
+
+        window.location.href =
+            "login.html";
+
+        return null;
+    }
+
+
+    return data.user;
+}
+
+
+// --------------------------------------------------
+// PROFILE
+// --------------------------------------------------
+
+async function getProfile(userId) {
+
+    const {
+        data,
+        error
+    } = await supabase
+        .from("profiles")
+        .select(
+            "id, username, full_name, avatar_url"
+        )
+        .eq("id", userId)
+        .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "PROFILE ERROR:",
+            error
+        );
+
+        return null;
+    }
+
+
+    return data;
+}
+
+
+// --------------------------------------------------
+// SAVE ACCOUNT
+// --------------------------------------------------
+
+function saveAccount(
+    user,
+    profile
+) {
+
+    let accounts =
+        JSON.parse(
+            localStorage.getItem(
+                "as_social_accounts"
+            ) || "[]"
+        );
+
+
+    const account = {
+
+        id:
+            user.id,
+
+        email:
+            user.email || "",
+
+        username:
+            profile?.username || "",
+
+        full_name:
+            profile?.full_name || "",
+
+        avatar_url:
+            profile?.avatar_url || "",
+
+        saved_at:
+            new Date().toISOString()
+
+    };
+
+
+    const index =
+        accounts.findIndex(
+            item =>
+                String(item.id) ===
+                String(user.id)
+        );
+
+
+    if (index >= 0) {
+
+        accounts[index] =
+            account;
+
+    } else {
+
+        accounts.push(account);
+
+    }
+
+
+    localStorage.setItem(
+        "as_social_accounts",
+        JSON.stringify(accounts)
+    );
+}
+
+
+// --------------------------------------------------
+// LOAD ACCOUNTS
+// --------------------------------------------------
+
+async function loadAccounts() {
+
+    currentUser =
+        await getCurrentUser();
+
+
+    if (!currentUser) return;
+
+
+    const profile =
+        await getProfile(
+            currentUser.id
+        );
+
+
+    saveAccount(
+        currentUser,
+        profile
+    );
+
+
+    renderAccounts();
+}
+
+
+// --------------------------------------------------
+// RENDER ACCOUNTS
+// --------------------------------------------------
+
+function renderAccounts() {
+
+    const accounts =
+        JSON.parse(
+            localStorage.getItem(
+                "as_social_accounts"
+            ) || "[]"
+        );
+
+
+    accountsContainer.innerHTML =
+        "";
+
+
+    if (!accounts.length) {
+
+        accountsContainer.innerHTML = `
+            <div class="empty">
+                Koi account saved nahi hai.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    accounts.forEach(
+        account => {
+
+            const isCurrent =
+                currentUser &&
+                String(account.id) ===
+                String(currentUser.id);
+
+
+            const avatar =
+                account.avatar_url ||
+                "https://via.placeholder.com/100";
+
+
+            const name =
+                account.full_name ||
+                account.username ||
+                "AS Social User";
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "account";
+
+
+            div.innerHTML = `
+
+                <img
+                    class="avatar"
+                    src="${escapeHtml(avatar)}"
+                    alt="Profile"
+                >
+
+                <div class="info">
+
+                    <div class="name">
+                        ${escapeHtml(name)}
+                    </div>
+
+                    <div class="email">
+                        ${escapeHtml(account.email)}
+                    </div>
+
+                    ${
+                        isCurrent
+                        ?
+                        `
+                        <div class="current">
+                            ✓ Current Account
+                        </div>
+                        `
+                        :
+                        ""
+                    }
+
+                </div>
+
+                ${
+                    isCurrent
+                    ?
+                    ""
+                    :
+                    `
+                    <button
+                        class="switch-btn"
+                        data-id="${escapeHtml(account.id)}"
+                    >
+                        Switch
+                    </button>
+
+                    <button
+                        class="delete-btn"
+                        data-delete="${escapeHtml(account.id)}"
+                    >
+                        ×
+                    </button>
+                    `
+                }
+
+            `;
+
+
+            accountsContainer.appendChild(
+                div
+            );
+
+        }
+    );
+
+
+    // SWITCH
+
+    document
+        .querySelectorAll(
+            ".switch-btn"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    function() {
+
+                        const id =
+                            this.dataset.id;
+
+
+                        const accounts =
+                            JSON.parse(
+                                localStorage.getItem(
+                                    "as_social_accounts"
+                                ) || "[]"
+                            );
+
+
+                        const account =
+                            accounts.find(
+                                item =>
+                                    String(
+                                        item.id
+                                    ) ===
+                                    String(id)
+                            );
+
+
+                        if (!account)
+                            return;
+
+
+                        startOtpLogin(
+                            account
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+    // DELETE ACCOUNT
+
+    document
+        .querySelectorAll(
+            ".delete-btn"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    function() {
+
+                        const id =
+                            this.dataset.delete;
+
+
+                        const ok =
+                            confirm(
+                                "Kya is account ko is device ki account list se remove karna hai?"
+                            );
+
+
+                        if (!ok)
+                            return;
+
+
+                        let accounts =
+                            JSON.parse(
+                                localStorage.getItem(
+                                    "as_social_accounts"
+                                ) || "[]"
+                            );
+
+
+                        accounts =
+                            accounts.filter(
+                                item =>
+                                    String(
+                                        item.id
+                                    ) !==
+                                    String(id)
+                            );
+
+
+                        localStorage.setItem(
+                            "as_social_accounts",
+                            JSON.stringify(
+                                accounts
+                            )
+                        );
+
+
+                        renderAccounts();
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+// --------------------------------------------------
+// SEND OTP
+// --------------------------------------------------
+
+async function startOtpLogin(
+    account
+) {
+
+    if (!account.email) {
+
+        alert(
+            "Is account ki email available nahi hai."
+        );
+
+        return;
+    }
+
+
+    selectedAccount =
+        account;
+
+
+    otpEmail.textContent =
+        "OTP bheja ja raha hai: " +
+        account.email;
+
+
+    accountsCard.style.display =
+        "none";
+
+
+    buttonsCard.style.display =
+        "none";
+
+
+    otpBox.style.display =
+        "block";
+
+
+    statusBox.textContent =
+        "📧 OTP send ho raha hai...";
+
+
+    const {
+        error
+    } = await supabase.auth.signInWithOtp({
+
+        email:
+            account.email,
+
+        options: {
+
+            shouldCreateUser:
+                false
+
+        }
+
+    });
+
+
+    if (error) {
+
+        console.error(
+            "OTP ERROR:",
+            error
+        );
+
+
+        statusBox.textContent =
+            "❌ OTP send nahi hua: " +
+            error.message;
+
+
+        return;
+    }
+
+
+    statusBox.textContent =
+        "✅ OTP email par bhej diya gaya. Inbox check karo.";
+
+    otpInput.value = "";
+
+    otpInput.focus();
+}
+
+
+// --------------------------------------------------
+// VERIFY OTP
+// --------------------------------------------------
+
+document
+    .getElementById("verifyOtp")
+    .addEventListener(
+        "click",
+        async function() {
+
+            if (!selectedAccount)
+                return;
+
+
+            const token =
+                otpInput.value.trim();
+
+
+            if (!/^\d{6}$/.test(token)) {
+
+                statusBox.textContent =
+                    "⚠️ 6 digit OTP enter karo.";
+
+                otpInput.focus();
+
+                return;
+            }
+
+
+            statusBox.textContent =
+                "🔐 OTP verify ho raha hai...";
+
+
+            const {
+                data,
+                error
+            } =
+                await supabase.auth.verifyOtp({
+
+                    email:
+                        selectedAccount.email,
+
+                    token:
+                        token,
+
+                    type:
+                        "email"
+
+                });
+
+
+            if (error) {
+
+                console.error(
+                    "VERIFY OTP ERROR:",
+                    error
+                );
+
+
+                statusBox.textContent =
+                    "❌ OTP galat ya expire ho gaya.";
+
+                return;
+            }
+
+
+            if (!data.session) {
+
+                statusBox.textContent =
+                    "❌ Login session create nahi hui.";
+
+                return;
+            }
+
+
+            statusBox.textContent =
+                "✅ Login successful!";
+
+
+            setTimeout(
+                () => {
+
+                    window.location.href =
+                        "home.html";
+
+                },
+                700
+            );
+
+        }
+    );
+
+
+// --------------------------------------------------
+// RESEND OTP
+// --------------------------------------------------
+
+document
+    .getElementById("resendOtp")
+    .addEventListener(
+        "click",
+        async function() {
+
+            if (!selectedAccount)
+                return;
+
+
+            statusBox.textContent =
+                "📧 OTP dobara send ho raha hai...";
+
+
+            const {
+                error
+            } =
+                await supabase.auth.signInWithOtp({
+
+                    email:
+                        selectedAccount.email,
+
+                    options: {
+
+                        shouldCreateUser:
+                            false
+
+                    }
+
+                });
+
+
+            if (error) {
+
+                statusBox.textContent =
+                    "❌ " +
+                    error.message;
+
+                return;
+            }
+
+
+            statusBox.textContent =
+                "✅ Naya OTP email par bhej diya gaya.";
+
+        }
+    );
+
+
+// --------------------------------------------------
+// CANCEL OTP
+// --------------------------------------------------
+
+document
+    .getElementById("cancelOtp")
+    .addEventListener(
+        "click",
+        function() {
+
+            selectedAccount =
+                null;
+
+
+            otpInput.value =
+                "";
+
+
+            statusBox.textContent =
+                "";
+
+
+            otpBox.style.display =
+                "none";
+
+
+            accountsCard.style.display =
+                "block";
+
+
+            buttonsCard.style.display =
+                "block";
+
+        }
+    );
+
+
+// --------------------------------------------------
+// ADD ACCOUNT
+// --------------------------------------------------
+
+document
+    .getElementById("addAccount")
+    .addEventListener(
+        "click",
+        async function() {
+
+            /*
+             * Current session logout hogi.
+             * Login page par naya account login/signup hoga.
+             */
+
+            await supabase.auth.signOut();
+
+
+            window.location.href =
+                "login.html";
+
+        }
+    );
+
+
+// --------------------------------------------------
+// HOME
+// --------------------------------------------------
+
+document
+    .getElementById("backHome")
+    .addEventListener(
+        "click",
+        function() {
+
+            window.location.href =
+                "home.html";
+
+        }
+    );
+
+
+// --------------------------------------------------
+// ESCAPE HTML
+// --------------------------------------------------
+
+function escapeHtml(value) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+// --------------------------------------------------
+// START
+// --------------------------------------------------
+
+loadAccounts();
+
+</script>
+
+</body>
+</html>
+```

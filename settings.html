@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings - AS Social</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#f5f5f5;
+    color:#111;
+    padding-bottom:80px;
+}
+
+body.dark{
+    background:#121212;
+    color:#fff;
+}
+
+.header{
+    background:linear-gradient(135deg,#6a11cb,#2575fc);
+    color:white;
+    padding:18px 20px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+.back{
+    color:white;
+    text-decoration:none;
+    font-size:24px;
+}
+
+.header h1{
+    font-size:21px;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+    padding:15px;
+}
+
+.section-title{
+    font-size:13px;
+    font-weight:bold;
+    color:#777;
+    margin:22px 5px 8px;
+    text-transform:uppercase;
+}
+
+body.dark .section-title{
+    color:#aaa;
+}
+
+.setting{
+    background:white;
+    border-radius:14px;
+    padding:15px;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+body.dark .setting{
+    background:#1e1e1e;
+}
+
+.icon{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f0f0f0;
+    font-size:20px;
+    flex-shrink:0;
+}
+
+body.dark .icon{
+    background:#303030;
+}
+
+.info{
+    flex:1;
+}
+
+.info strong{
+    display:block;
+    font-size:15px;
+    margin-bottom:4px;
+}
+
+.info small{
+    color:#777;
+    font-size:12px;
+    line-height:1.4;
+}
+
+body.dark .info small{
+    color:#aaa;
+}
+
+.arrow{
+    font-size:25px;
+    color:#888;
+}
+
+.clickable{
+    cursor:pointer;
+}
+
+.switch{
+    position:relative;
+    width:48px;
+    height:27px;
+    flex-shrink:0;
+}
+
+.switch input{
+    opacity:0;
+    width:0;
+    height:0;
+}
+
+.slider{
+    position:absolute;
+    inset:0;
+    background:#ccc;
+    border-radius:30px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.slider:before{
+    content:"";
+    position:absolute;
+    width:21px;
+    height:21px;
+    left:3px;
+    top:3px;
+    background:white;
+    border-radius:50%;
+    transition:.3s;
+}
+
+.switch input:checked + .slider{
+    background:#2575fc;
+}
+
+.switch input:checked + .slider:before{
+    transform:translateX(21px);
+}
+
+.danger{
+    color:#e53935;
+}
+
+.logout{
+    width:100%;
+    border:none;
+    background:#fff;
+    color:#e53935;
+    padding:16px;
+    border-radius:14px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+body.dark .logout{
+    background:#1e1e1e;
+}
+
+.bottom{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:65px;
+    background:white;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    border-top:1px solid #ddd;
+    z-index:20;
+}
+
+body.dark .bottom{
+    background:#1e1e1e;
+    border-color:#333;
+}
+
+.bottom a{
+    text-decoration:none;
+    color:#555;
+    text-align:center;
+    font-size:12px;
+}
+
+body.dark .bottom a{
+    color:#ccc;
+}
+
+.bottom span{
+    display:block;
+    font-size:22px;
+    margin-bottom:2px;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.6);
+    z-index:100;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal-box{
+    background:white;
+    width:100%;
+    max-width:420px;
+    border-radius:18px;
+    padding:20px;
+}
+
+body.dark .modal-box{
+    background:#222;
+    color:#fff;
+}
+
+.modal-box h2{
+    margin-bottom:15px;
+}
+
+.modal-box input,
+.modal-box select{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+body.dark .modal-box input,
+body.dark .modal-box select{
+    background:#333;
+    color:white;
+    border-color:#555;
+}
+
+.modal-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+.modal-buttons button{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.save{
+    background:#2575fc;
+    color:white;
+}
+
+.cancel{
+    background:#ddd;
+}
+
+body.dark .cancel{
+    background:#444;
+    color:white;
+}
+
+.account-data{
+    line-height:1.8;
+    font-size:14px;
+}
+
+@media(max-width:500px){
+    .container{
+        padding:10px;
+    }
+
+    .setting{
+        padding:13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <a href="profile.html" class="back">‹</a>
+    <h1>Settings</h1>
+</div>
+
+<div class="container">
+
+    <!-- ACCOUNT -->
+
+    <div class="section-title">Account</div>
+
+    <div class="setting">
+        <div class="icon">🔒</div>
+
+        <div class="info">
+            <strong>Private Account</strong>
+            <small>Only accepted followers can see your posts</small>
+        </div>
+
+        <label class="switch">
+            <input type="checkbox" id="privateAccount">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="setting clickable" onclick="editProfile()">
+        <div class="icon">👤</div>
+
+        <div class="info">
+            <strong>Edit Profile</strong>
+            <small>Change name, username and bio</small>
+        </div>
+
+        <div class="arrow">›</div>
+    </div>
+
+    <div class="setting clickable" onclick="openRequests()">
+        <div class="icon">👥</div>
+
+        <div class="info">
+            <strong>Follow Requests</strong>
+            <small>Manage people who want to follow you</small>
+        </div>
+
+        <div class="arrow">›</div>
+    </div>
+
+
+    <!-- PRIVACY -->
+
+    <div class="section-title">Privacy</div>
+
+    <div class="setting">
+        <div class="icon">🟢</div>
+
+        <div class="info">
+            <strong>Activity Status</strong>
+            <small>Show when you are active</small>
+        </div>
+
+        <label class="switch">
+            <input type="checkbox" id="activityStatus">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="setting clickable" onclick="messageSettings()">
+        <div class="icon">💬</div>
+
+        <div class="info">
+            <strong>Message Settings</strong>
+            <small>Control who can message you</small>
+        </div>
+
+        <div class="arrow">›</div>
+    </div>
+
+    <div class="setting clickable" onclick="blockedUsers()">
+        <div class="icon">🚫</div>
+
+        <div class="info">
+            <strong>Blocked Users</strong>
+            <small>Manage blocked accounts</small>
+        </div>
+
+        <div class="arrow">›</div>
+    </div>
+
+
+    <!-- NOTIFICATIONS -->
+
+    <div class="section-title">Notifications</div>
+
+    <div class="setting">
+        <div class="icon">🔔</div>
+
+        <div class="info">
+            <strong>Notifications</strong>
+            <small>Likes, comments, follows and messages</small>
+        </div>
+
+        <label class="switch">
+            <input type="checkbox" id="notifications">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+
+    <!-- APPEARANCE -->
+
+    <div class="section-title">Appearance</div>
+
+    <div class="setting">
+        <div class="icon">🌙</div>
+
+        <div class="info">
+            <strong>Dark Mode</strong>
+            <small>Use dark appearance</small>
+        </div>
+
+        <label class="switch">
+            <input type="checkbox" id="darkMode">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+
+    <!-- INFORMATION -->
+
+    <div class="section-title">Information</div>
+
+    <div class="setting clickable" onclick="accountInformation()">
+        <div class="icon">📱</div>
+
+        <div class="info">
+            <strong>Account Information</strong>
+            <small>View your account details</small>
+        </div>
+
+        <div class="arrow">›</div>
+    </div>
+
+    <div class="setting clickable" onclick="downloadData()">
+        <div class="icon">📥</div>
+
+        <div class="info">
+            <strong>Download Your Data</strong>
+            <small>Get your AS Social information</small>
+        </div>
+
+        <div class="arrow">›</div>
+    </div>
+
+    <div class="setting clickable" onclick="aboutApp()">
+        <div class="icon">ℹ️</div>
+
+        <div class="info">
+            <strong>About AS Social</strong>
+            <small>Version 1.0</small>
+        </div>
+
+        <div class="arrow">›</div>
+    </div>
+
+
+    <!-- SECURITY -->
+
+    <div class="section-title">Security</div>
+
+    <div class="setting clickable" onclick="loginSecurity()">
+        <div class="icon">🔐</div>
+
+        <div class="info">
+            <strong>Login Security</strong>
+            <small>Manage your login session</small>
+        </div>
+
+        <div class="arrow">›</div>
+    </div>
+
+
+    <!-- LOGOUT -->
+
+    <button class="logout" onclick="logout()">
+        🚪 Log Out
+    </button>
+
+</div>
+
+
+<!-- MESSAGE SETTINGS MODAL -->
+
+<div class="modal" id="messageModal">
+
+    <div class="modal-box">
+
+        <h2>💬 Message Settings</h2>
+
+        <p style="font-size:13px;color:#777;margin-bottom:10px;">
+            Choose who can send you messages.
+        </p>
+
+        <select id="messagePermission">
+            <option value="everyone">Everyone</option>
+            <option value="followers">Followers Only</option>
+            <option value="nobody">Nobody</option>
+        </select>
+
+        <div class="modal-buttons">
+            <button class="cancel" onclick="closeModal('messageModal')">
+                Cancel
+            </button>
+
+            <button class="save" onclick="saveMessageSettings()">
+                Save
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ACCOUNT INFORMATION MODAL -->
+
+<div class="modal" id="accountModal">
+
+    <div class="modal-box">
+
+        <h2>📱 Account Information</h2>
+
+        <div class="account-data" id="accountData">
+            Loading...
+        </div>
+
+        <div class="modal-buttons">
+
+            <button class="save"
+                    onclick="closeModal('accountModal')">
+                Close
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="bottom">
+
+    <a href="home.html">
+        <span>🏠</span>
+        Home
+    </a>
+
+    <a href="create-post.html">
+        <span>➕</span>
+        Post
+    </a>
+
+    <a href="chat.html">
+        <span>💬</span>
+        Chat
+    </a>
+
+    <a href="profile.html">
+        <span>👤</span>
+        Profile
+    </a>
+
+</div>
+
+
+<script type="module">
+
+import { supabase } from "./js/supabase.js";
+
+
+let currentUser = null;
+
+
+/* -------------------------
+   GET USER
+------------------------- */
+
+async function getCurrentUser(){
+
+    const { data, error } =
+        await supabase.auth.getUser();
+
+    if(error || !data.user){
+
+        alert("Please login first.");
+
+        window.location.href = "login.html";
+
+        return null;
+    }
+
+    return data.user;
+}
+
+
+/* -------------------------
+   LOAD SETTINGS
+------------------------- */
+
+async function loadSettings(){
+
+    currentUser = await getCurrentUser();
+
+    if(!currentUser) return;
+
+
+    const { data: profile, error } =
+        await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", currentUser.id)
+        .maybeSingle();
+
+
+    if(!error && profile){
+
+        document.getElementById("privateAccount").checked =
+            profile.is_private === true;
+    }
+
+
+    document.getElementById("activityStatus").checked =
+        localStorage.getItem("as_activity_status") !== "off";
+
+
+    document.getElementById("notifications").checked =
+        localStorage.getItem("as_notifications") !== "off";
+
+
+    document.getElementById("darkMode").checked =
+        localStorage.getItem("as_dark_mode") === "on";
+
+
+    document.getElementById("messagePermission").value =
+        localStorage.getItem("as_message_permission") || "everyone";
+
+
+    applyDarkMode();
+
+}
+
+
+/* -------------------------
+   PRIVATE ACCOUNT
+------------------------- */
+
+document
+.getElementById("privateAccount")
+.addEventListener("change", async function(){
+
+    if(!currentUser) return;
+
+
+    const value = this.checked;
+
+
+    const { error } =
+        await supabase
+        .from("profiles")
+        .update({
+            is_private:value
+        })
+        .eq("id", currentUser.id);
+
+
+    if(error){
+
+        alert(
+            "Private Account update nahi ho paya.\n\n" +
+            error.message
+        );
+
+        this.checked = !value;
+
+        return;
+    }
+
+
+    alert(
+        value
+        ? "🔒 Private Account ON"
+        : "🔓 Private Account OFF"
+    );
+
+});
+
+
+/* -------------------------
+   ACTIVITY STATUS
+------------------------- */
+
+document
+.getElementById("activityStatus")
+.addEventListener("change", function(){
+
+    localStorage.setItem(
+        "as_activity_status",
+        this.checked ? "on" : "off"
+    );
+
+});
+
+
+/* -------------------------
+   NOTIFICATIONS
+------------------------- */
+
+document
+.getElementById("notifications")
+.addEventListener("change", function(){
+
+    localStorage.setItem(
+        "as_notifications",
+        this.checked ? "on" : "off"
+    );
+
+});
+
+
+/* -------------------------
+   DARK MODE
+------------------------- */
+
+document
+.getElementById("darkMode")
+.addEventListener("change", function(){
+
+    localStorage.setItem(
+        "as_dark_mode",
+        this.checked ? "on" : "off"
+    );
+
+    applyDarkMode();
+
+});
+
+
+function applyDarkMode(){
+
+    const enabled =
+        localStorage.getItem("as_dark_mode") === "on";
+
+    document.body.classList.toggle(
+        "dark",
+        enabled
+    );
+
+}
+
+
+/* -------------------------
+   EDIT PROFILE
+------------------------- */
+
+window.editProfile = function(){
+
+    window.location.href =
+        "profile.html?edit=true";
+
+};
+
+
+/* -------------------------
+   FOLLOW REQUESTS
+------------------------- */
+
+window.openRequests = function(){
+
+    window.location.href =
+        "profile.html?requests=true";
+
+};
+
+
+/* -------------------------
+   MESSAGE SETTINGS
+------------------------- */
+
+window.messageSettings = function(){
+
+    document.getElementById(
+        "messageModal"
+    ).style.display = "flex";
+
+};
+
+
+window.saveMessageSettings = function(){
+
+    const value =
+        document.getElementById(
+            "messagePermission"
+        ).value;
+
+
+    localStorage.setItem(
+        "as_message_permission",
+        value
+    );
+
+
+    closeModal("messageModal");
+
+
+    alert("💬 Message Settings saved.");
+
+};
+
+
+/* -------------------------
+   BLOCKED USERS
+------------------------- */
+
+window.blockedUsers = function(){
+
+    const blocked =
+        JSON.parse(
+            localStorage.getItem(
+                "as_blocked_users"
+            ) || "[]"
+        );
+
+
+    if(blocked.length === 0){
+
+        alert(
+            "🚫 Abhi koi blocked user nahi hai."
+        );
+
+        return;
+    }
+
+
+    alert(
+        "Blocked Users: " +
+        blocked.length
+    );
+
+};
+
+
+/* -------------------------
+   ACCOUNT INFORMATION
+------------------------- */
+
+window.accountInformation = async function(){
+
+    if(!currentUser) return;
+
+
+    const { data: profile } =
+        await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", currentUser.id)
+        .maybeSingle();
+
+
+    let html = `
+
+        <b>Email:</b><br>
+        ${escapeHtml(currentUser.email || "Not available")}
+        <br><br>
+
+        <b>User ID:</b><br>
+        ${escapeHtml(currentUser.id)}
+        <br><br>
+
+    `;
+
+
+    if(profile){
+
+        html += `
+
+            <b>Name:</b><br>
+            ${escapeHtml(
+                profile.full_name ||
+                profile.name ||
+                "Not set"
+            )}
+
+            <br><br>
+
+            <b>Username:</b><br>
+            ${escapeHtml(
+                profile.username ||
+                "Not set"
+            )}
+
+        `;
+    }
+
+
+    document.getElementById(
+        "accountData"
+    ).innerHTML = html;
+
+
+    document.getElementById(
+        "accountModal"
+    ).style.display = "flex";
+
+};
+
+
+/* -------------------------
+   DOWNLOAD DATA
+------------------------- */
+
+window.downloadData = async function(){
+
+    if(!currentUser) return;
+
+
+    const { data: profile } =
+        await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", currentUser.id)
+        .maybeSingle();
+
+
+    const exportData = {
+
+        app:"AS Social",
+
+        exported_at:
+            new Date().toISOString(),
+
+        account:{
+            id:currentUser.id,
+            email:currentUser.email
+        },
+
+        profile:profile || null,
+
+        settings:{
+
+            private_account:
+                document.getElementById(
+                    "privateAccount"
+                ).checked,
+
+            activity_status:
+                localStorage.getItem(
+                    "as_activity_status"
+                ) || "on",
+
+            notifications:
+                localStorage.getItem(
+                    "as_notifications"
+                ) || "on",
+
+            dark_mode:
+                localStorage.getItem(
+                    "as_dark_mode"
+                ) || "off",
+
+            message_permission:
+                localStorage.getItem(
+                    "as_message_permission"
+                ) || "everyone"
+
+        }
+
+    };
+
+
+    const blob =
+        new Blob(
+            [
+                JSON.stringify(
+                    exportData,
+                    null,
+                    2
+                )
+            ],
+            {
+                type:"application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const a =
+        document.createElement("a");
+
+
+    a.href = url;
+
+    a.download =
+        "AS-Social-Data.json";
+
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+    URL.revokeObjectURL(url);
+
+
+    alert(
+        "📥 Your AS Social data download ho gaya."
+    );
+
+};
+
+
+/* -------------------------
+   ABOUT
+------------------------- */
+
+window.aboutApp = function(){
+
+    alert(
+        "AS Social\n\n" +
+        "Version 1.0\n\n" +
+        "Social media platform built with HTML, JavaScript & Supabase."
+    );
+
+};
+
+
+/* -------------------------
+   LOGIN SECURITY
+------------------------- */
+
+window.loginSecurity = async function(){
+
+    if(!currentUser) return;
+
+
+    const confirmed =
+        confirm(
+            "🔐 Login Security\n\n" +
+            "Current login session ko logout karna hai?"
+        );
+
+
+    if(!confirmed) return;
+
+
+    const { error } =
+        await supabase.auth.signOut();
+
+
+    if(error){
+
+        alert(
+            "Logout failed:\n" +
+            error.message
+        );
+
+        return;
+    }
+
+
+    window.location.href =
+        "login.html";
+
+};
+
+
+/* -------------------------
+   LOGOUT
+------------------------- */
+
+window.logout = async function(){
+
+    const confirmed =
+        confirm(
+            "Kya aap logout karna chahte hain?"
+        );
+
+
+    if(!confirmed) return;
+
+
+    const { error } =
+        await supabase.auth.signOut();
+
+
+    if(error){
+
+        alert(
+            "Logout failed:\n" +
+            error.message
+        );
+
+        return;
+    }
+
+
+    window.location.href =
+        "login.html";
+
+};
+
+
+/* -------------------------
+   MODAL CLOSE
+------------------------- */
+
+window.closeModal = function(id){
+
+    document.getElementById(id).style.display =
+        "none";
+
+};
+
+
+/* -------------------------
+   ESCAPE HTML
+------------------------- */
+
+function escapeHtml(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* -------------------------
+   START
+------------------------- */
+
+loadSettings();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AS Social - Profile</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f5f5f5;
+    color:#222;
+}
+
+header{
+    height:60px;
+    background:#111827;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 18px;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+header h2{
+    margin:0;
+    font-size:20px;
+}
+
+.home-btn{
+    text-decoration:none;
+    color:white;
+    background:#2563eb;
+    padding:9px 15px;
+    border-radius:9px;
+    font-size:14px;
+}
+
+.container{
+    max-width:700px;
+    margin:20px auto 100px;
+    padding:0 12px;
+}
+
+.profile-card{
+    background:white;
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 4px 18px rgba(0,0,0,.08);
+}
+
+.profile-top{
+    display:flex;
+    gap:18px;
+    align-items:center;
+}
+
+.avatar{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    background:#2563eb;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    font-weight:bold;
+    overflow:hidden;
+    flex-shrink:0;
+}
+
+.avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.profile-info{
+    flex:1;
+    min-width:0;
+}
+
+#fullName{
+    margin:0 0 5px;
+    font-size:22px;
+}
+
+#username{
+    margin:0 0 7px;
+    color:#666;
+}
+
+#bio{
+    margin:0;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+
+.private-badge{
+    display:inline-block;
+    margin-top:8px;
+    padding:5px 9px;
+    background:#fef3c7;
+    color:#92400e;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.stats{
+    display:flex;
+    justify-content:space-around;
+    border-top:1px solid #eee;
+    margin-top:20px;
+    padding-top:17px;
+}
+
+.stat{
+    text-align:center;
+    cursor:pointer;
+}
+
+.stat strong{
+    display:block;
+    font-size:18px;
+}
+
+.stat span{
+    color:#777;
+    font-size:13px;
+}
+
+.buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-top:18px;
+}
+
+.profile-btn{
+    border:0;
+    padding:10px 15px;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    cursor:pointer;
+    font-weight:600;
+    font-size:14px;
+}
+
+.profile-btn:hover{
+    opacity:.9;
+}
+
+.secondary-btn{
+    background:#e5e7eb;
+    color:#111827;
+}
+
+.danger-btn{
+    background:#dc2626;
+}
+
+.success-btn{
+    background:#16a34a;
+}
+
+.warning-btn{
+    background:#d97706;
+}
+
+.private-setting{
+    margin-top:18px;
+    padding:15px;
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+}
+
+.private-setting-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.private-setting-title{
+    font-weight:bold;
+}
+
+.private-setting small{
+    display:block;
+    color:#777;
+    margin-top:4px;
+}
+
+.switch{
+    position:relative;
+    width:52px;
+    height:28px;
+    flex-shrink:0;
+}
+
+.switch input{
+    display:none;
+}
+
+.slider{
+    position:absolute;
+    inset:0;
+    background:#ccc;
+    border-radius:30px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.slider:before{
+    content:"";
+    position:absolute;
+    width:22px;
+    height:22px;
+    left:3px;
+    top:3px;
+    background:white;
+    border-radius:50%;
+    transition:.25s;
+}
+
+.switch input:checked + .slider{
+    background:#2563eb;
+}
+
+.switch input:checked + .slider:before{
+    transform:translateX(24px);
+}
+
+.section-title{
+    margin:25px 2px 12px;
+    font-size:18px;
+}
+
+.request-card{
+    background:white;
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,.07);
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.request-avatar{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#2563eb;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    overflow:hidden;
+    flex-shrink:0;
+}
+
+.request-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.request-info{
+    flex:1;
+}
+
+.request-info strong{
+    display:block;
+}
+
+.request-info small{
+    color:#777;
+}
+
+.request-buttons{
+    display:flex;
+    gap:6px;
+}
+
+.request-buttons button{
+    border:0;
+    padding:7px 10px;
+    border-radius:8px;
+    cursor:pointer;
+    color:white;
+    font-weight:bold;
+}
+
+.accept-btn{
+    background:#16a34a;
+}
+
+.reject-btn{
+    background:#dc2626;
+}
+
+#userPosts{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.post-card{
+    background:white;
+    border-radius:15px;
+    padding:14px;
+    box-shadow:0 3px 12px rgba(0,0,0,.07);
+}
+
+.post-date{
+    color:#999;
+    font-size:12px;
+    margin-top:4px;
+}
+
+.post-content{
+    white-space:pre-wrap;
+    word-break:break-word;
+    margin-top:12px;
+}
+
+.post-image{
+    width:100%;
+    max-height:600px;
+    object-fit:contain;
+    border-radius:12px;
+    margin-top:12px;
+    background:#f5f5f5;
+}
+
+.private-message{
+    background:white;
+    border-radius:15px;
+    padding:35px 20px;
+    text-align:center;
+    box-shadow:0 3px 12px rgba(0,0,0,.07);
+}
+
+.private-message .lock{
+    font-size:45px;
+}
+
+.private-message h3{
+    margin:10px 0;
+}
+
+.private-message p{
+    color:#777;
+}
+
+.loading{
+    text-align:center;
+    padding:30px;
+    color:#777;
+}
+
+.empty{
+    background:white;
+    padding:25px;
+    text-align:center;
+    border-radius:14px;
+    color:#777;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:5000;
+    align-items:center;
+    justify-content:center;
+    padding:15px;
+}
+
+.modal-box{
+    width:100%;
+    max-width:450px;
+    background:white;
+    border-radius:16px;
+    padding:20px;
+}
+
+.modal-box h3{
+    margin-top:0;
+}
+
+.input{
+    width:100%;
+    padding:11px;
+    border:1px solid #ddd;
+    border-radius:9px;
+    margin-bottom:12px;
+    font-size:15px;
+}
+
+textarea.input{
+    min-height:100px;
+    resize:vertical;
+}
+
+.modal-buttons{
+    display:flex;
+    gap:8px;
+}
+
+.bottom-nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    height:62px;
+    background:white;
+    border-top:1px solid #ddd;
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    z-index:2000;
+}
+
+.bottom-nav a{
+    text-decoration:none;
+    color:#444;
+    font-size:13px;
+    text-align:center;
+}
+
+.bottom-nav span{
+    display:block;
+    font-size:20px;
+}
+
+.toast{
+    position:fixed;
+    left:20px;
+    bottom:80px;
+    background:#16a34a;
+    color:white;
+    padding:12px 16px;
+    border-radius:10px;
+    z-index:9999;
+    display:none;
+    font-weight:bold;
+    max-width:330px;
+}
+
+@media(max-width:500px){
+
+    .profile-top{
+        align-items:flex-start;
+    }
+
+    .avatar{
+        width:82px;
+        height:82px;
+        font-size:27px;
+    }
+
+    #fullName{
+        font-size:19px;
+    }
+
+    .profile-card{
+        padding:16px;
+    }
+
+    .request-card{
+        align-items:flex-start;
+    }
+
+    .request-buttons{
+        flex-direction:column;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>AS Social</h2>
+    <a href="home.html" class="home-btn">🏠 Home</a>
+</header>
+
+<div class="container">
+
+    <div class="profile-card">
+
+        <div class="profile-top">
+
+            <div id="avatar" class="avatar">
+                AS
+            </div>
+
+            <div class="profile-info">
+
+                <h2 id="fullName">Loading...</h2>
+
+                <p id="username">@username</p>
+
+                <p id="bio"></p>
+
+                <div id="privateBadge"></div>
+
+            </div>
+
+        </div>
+
+        <div class="stats">
+
+            <div class="stat" id="postsStat">
+                <strong id="postCount">0</strong>
+                <span>Posts</span>
+            </div>
+
+            <div class="stat" id="followersStat">
+                <strong id="followersCount">0</strong>
+                <span>Followers</span>
+            </div>
+
+            <div class="stat" id="followingStat">
+                <strong id="followingCount">0</strong>
+                <span>Following</span>
+            </div>
+
+        </div>
+
+        <div id="followArea" class="buttons"></div>
+
+        <div id="privateSettingArea"></div>
+
+    </div>
+
+
+    <div id="requestsSection" style="display:none;">
+
+        <h3 class="section-title">
+            👥 Follow Requests
+        </h3>
+
+        <div id="requestsList"></div>
+
+    </div>
+
+
+    <h3 class="section-title">
+        📸 Posts
+    </h3>
+
+    <div id="userPosts">
+
+        <div class="loading">
+            Loading posts...
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- EDIT PROFILE MODAL -->
+
+<div id="editModal" class="modal">
+
+    <div class="modal-box">
+
+        <h3>✏️ Edit Profile</h3>
+
+        <input
+            id="editFullName"
+            class="input"
+            type="text"
+            placeholder="Full Name"
+        >
+
+        <input
+            id="editUsername"
+            class="input"
+            type="text"
+            placeholder="Username"
+        >
+
+        <textarea
+            id="editBio"
+            class="input"
+            placeholder="Bio"
+        ></textarea>
+
+        <div class="modal-buttons">
+
+            <button
+                type="button"
+                class="profile-btn secondary-btn"
+                id="cancelEditBtn"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="profile-btn"
+                id="saveProfileBtn"
+            >
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- PHOTO INPUT -->
+
+<input
+    type="file"
+    id="photoInput"
+    accept="image/*"
+    style="display:none;"
+>
+
+
+<div id="toast" class="toast"></div>
+
+
+<div class="bottom-nav">
+
+    <a href="home.html">
+        <span>🏠</span>
+        Home
+    </a>
+
+    <a href="create-post.html">
+        <span>➕</span>
+        Post
+    </a>
+
+    <a href="chat.html">
+        <span>💬</span>
+        Chat
+    </a>
+
+</div>
+
+
+<script type="module">
+
+import { supabase } from "./js/supabase.js";
+
+
+/* =========================
+   GLOBAL VARIABLES
+========================= */
+
+let currentUser = null;
+let targetId = null;
+let currentProfile = null;
+let isFollowing = false;
+let pendingRequest = null;
+
+
+/* =========================
+   TOAST
+========================= */
+
+function showToast(message, type = "success"){
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.style.background =
+        type === "error"
+        ? "#dc2626"
+        : "#16a34a";
+
+    toast.style.display = "block";
+
+    clearTimeout(window.toastTimer);
+
+    window.toastTimer = setTimeout(() => {
+
+        toast.style.display = "none";
+
+    },3000);
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* =========================
+   ESCAPE ATTRIBUTE
+========================= */
+
+function escapeAttribute(value){
+
+    return escapeHTML(value);
+
+}
+
+
+/* =========================
+   FORMAT DATE
+========================= */
+
+function formatDate(date){
+
+    if(!date) return "";
+
+    const d = new Date(date);
+
+    return d.toLocaleString("en-IN",{
+        dateStyle:"medium",
+        timeStyle:"short"
+    });
+
+}
+
+
+/* =========================
+   CHECK USER
+========================= */
+
+async function checkUser(){
+
+    const {
+        data,
+        error
+    } = await supabase.auth.getUser();
+
+    if(error || !data.user){
+
+        window.location.href = "login.html";
+
+        return null;
+    }
+
+    currentUser = data.user;
+
+    return currentUser;
+
+}
+
+
+/* =========================
+   GET TARGET USER
+========================= */
+
+function getTargetId(){
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    return params.get("user") ||
+           currentUser.id;
+
+}
+
+
+/* =========================
+   LOAD PROFILE
+========================= */
+
+async function loadProfile(){
+
+    const {
+        data: profile,
+        error
+    } =
+        await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id",targetId)
+            .maybeSingle();
+
+
+    if(error){
+
+        console.error(
+            "PROFILE ERROR:",
+            error
+        );
+
+        showToast(
+            "Profile load nahi ho raha.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(!profile){
+
+        document.getElementById("fullName")
+            .textContent = "Profile not found";
+
+        return;
+    }
+
+
+    currentProfile = profile;
+
+
+    /* NAME */
+
+    document.getElementById("fullName")
+        .textContent =
+            profile.full_name ||
+            profile.username ||
+            "AS User";
+
+
+    /* USERNAME */
+
+    document.getElementById("username")
+        .textContent =
+            profile.username
+            ? "@" + profile.username
+            : "";
+
+
+    /* BIO */
+
+    document.getElementById("bio")
+        .textContent =
+            profile.bio || "";
+
+
+    /* AVATAR */
+
+    const avatar =
+        document.getElementById("avatar");
+
+
+    if(profile.avatar_url){
+
+        avatar.innerHTML = `
+            <img
+                src="${escapeAttribute(profile.avatar_url)}"
+                alt="Profile"
+            >
+        `;
+
+    }else{
+
+        const name =
+            profile.full_name ||
+            profile.username ||
+            "AS";
+
+        avatar.textContent =
+            name.substring(0,2)
+                .toUpperCase();
+
+    }
+
+
+    /* PRIVATE BADGE */
+
+    const badge =
+        document.getElementById("privateBadge");
+
+
+    if(profile.is_private){
+
+        badge.innerHTML = `
+            <span class="private-badge">
+                🔒 Private Account
+            </span>
+        `;
+
+    }else{
+
+        badge.innerHTML = "";
+
+    }
+
+
+    await loadStats();
+
+
+    if(
+        String(targetId) ===
+        String(currentUser.id)
+    ){
+
+        await showOwnProfile();
+
+    }else{
+
+        await showOtherProfile();
+
+    }
+
+}
+
+
+/* =========================
+   LOAD STATS
+========================= */
+
+async function loadStats(){
+
+
+    /* POSTS */
+
+    const {
+        count: postCount
+    } =
+        await supabase
+            .from("posts")
+            .select(
+                "id",
+                {
+                    count:"exact",
+                    head:true
+                }
+            )
+            .eq(
+                "user_id",
+                targetId
+            );
+
+
+    document.getElementById("postCount")
+        .textContent =
+            postCount || 0;
+
+
+    /* FOLLOWERS */
+
+    const {
+        count: followersCount
+    } =
+        await supabase
+            .from("followers")
+            .select(
+                "id",
+                {
+                    count:"exact",
+                    head:true
+                }
+            )
+            .eq(
+                "following_id",
+                targetId
+            );
+
+
+    document.getElementById("followersCount")
+        .textContent =
+            followersCount || 0;
+
+
+    /* FOLLOWING */
+
+    const {
+        count: followingCount
+    } =
+        await supabase
+            .from("followers")
+            .select(
+                "id",
+                {
+                    count:"exact",
+                    head:true
+                }
+            )
+            .eq(
+                "follower_id",
+                targetId
+            );
+
+
+    document.getElementById("followingCount")
+        .textContent =
+            followingCount || 0;
+
+}
+
+
+/* =========================
+   OWN PROFILE
+========================= */
+
+async function showOwnProfile(){
+
+    const area =
+        document.getElementById("followArea");
+
+
+    area.innerHTML = `
+        <a
+            href="chat.html?user=${encodeURIComponent(currentUser.id)}"
+            class="profile-btn"
+        >
+            💬 Message Myself
+        </a>
+
+        <button
+    type="button"
+    class="profile-btn"
+    id="editProfileBtn"
+>
+    ✏️ Edit Profile
+</button>
+
+<a
+    href="settings.html"
+    class="profile-btn secondary"
+    style="text-decoration:none;"
+>
+    ⚙️ Settings
+</a>
+
+        <button
+            type="button"
+            class="profile-btn secondary-btn"
+            id="changePhotoBtn"
+        >
+            📷 Change Photo
+        </button>
+    `;
+
+
+    document
+        .getElementById("editProfileBtn")
+        .addEventListener(
+            "click",
+            openEditModal
+        );
+
+
+    document
+        .getElementById("changePhotoBtn")
+        .addEventListener(
+            "click",
+            () => {
+
+                document
+                    .getElementById("photoInput")
+                    .click();
+
+            }
+        );
+
+
+    renderPrivateSetting();
+
+
+    await loadFollowRequests();
+
+
+    await loadUserPosts();
+
+}
+
+
+/* =========================
+   PRIVATE SETTING
+========================= */
+
+function renderPrivateSetting(){
+
+    const area =
+        document.getElementById(
+            "privateSettingArea"
+        );
+
+
+    area.innerHTML = `
+
+        <div class="private-setting">
+
+            <div class="private-setting-row">
+
+                <div>
+
+                    <div class="private-setting-title">
+                        🔒 Private Profile
+                    </div>
+
+                    <small id="privateText">
+                        ${
+                            currentProfile.is_private
+                            ? "Sirf approved followers aapke posts dekh sakte hain."
+                            : "Sabhi users aapke posts dekh sakte hain."
+                        }
+                    </small>
+
+                </div>
+
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        id="privateToggle"
+                        ${
+                            currentProfile.is_private
+                            ? "checked"
+                            : ""
+                        }
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+    `;
+
+
+    document
+        .getElementById("privateToggle")
+        .addEventListener(
+            "change",
+            togglePrivateProfile
+        );
+
+}
+
+
+/* =========================
+   TOGGLE PRIVATE PROFILE
+========================= */
+
+async function togglePrivateProfile(){
+
+    const toggle =
+        document.getElementById(
+            "privateToggle"
+        );
+
+
+    const newValue =
+        toggle.checked;
+
+
+    const {
+        error
+    } =
+        await supabase
+            .from("profiles")
+            .update({
+                is_private:newValue
+            })
+            .eq(
+                "id",
+                currentUser.id
+            );
+
+
+    if(error){
+
+        console.error(error);
+
+        toggle.checked =
+            !newValue;
+
+        showToast(
+            "Private profile update nahi hua.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    currentProfile.is_private =
+        newValue;
+
+
+    document.getElementById(
+        "privateText"
+    ).textContent =
+        newValue
+        ? "Sirf approved followers aapke posts dekh sakte hain."
+        : "Sabhi users aapke posts dekh sakte hain.";
+
+
+    document.getElementById(
+        "privateBadge"
+    ).innerHTML =
+        newValue
+        ? `<span class="private-badge">🔒 Private Account</span>`
+        : "";
+
+
+    showToast(
+        newValue
+        ? "🔒 Private Profile ON"
+        : "🔓 Private Profile OFF"
+    );
+
+
+    await loadUserPosts();
+
+}
+
+
+/* =========================
+   OTHER PROFILE
+========================= */
+
+async function showOtherProfile(){
+
+    document.getElementById(
+        "privateSettingArea"
+    ).innerHTML = "";
+
+
+    const {
+        data: existing
+    } =
+        await supabase
+            .from("followers")
+            .select("id")
+            .eq(
+                "follower_id",
+                currentUser.id
+            )
+            .eq(
+                "following_id",
+                targetId
+            )
+            .maybeSingle();
+
+
+    isFollowing =
+        !!existing;
+
+
+    /* CHECK REQUEST */
+
+    const {
+        data: request
+    } =
+        await supabase
+            .from("follow_requests")
+            .select("*")
+            .eq(
+                "sender_id",
+                currentUser.id
+            )
+            .eq(
+                "receiver_id",
+                targetId
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
+            )
+            .limit(1)
+            .maybeSingle();
+
+
+    pendingRequest =
+        request &&
+        request.status === "pending"
+        ? request
+        : null;
+
+
+    renderOtherProfileButtons();
+
+
+    await loadUserPosts();
+
+}
+
+
+/* =========================
+   RENDER OTHER BUTTONS
+========================= */
+
+function renderOtherProfileButtons(){
+
+    const area =
+        document.getElementById(
+            "followArea"
+        );
+
+
+    let followButton = "";
+
+
+    if(isFollowing){
+
+        followButton = `
+            <button
+                type="button"
+                class="profile-btn danger-btn"
+                id="followBtn"
+            >
+                Unfollow
+            </button>
+        `;
+
+    }else if(
+        currentProfile.is_private
+    ){
+
+        if(pendingRequest){
+
+            followButton = `
+                <button
+                    type="button"
+                    class="profile-btn warning-btn"
+                    id="followBtn"
+                >
+                    ⏳ Request Sent
+                </button>
+            `;
+
+        }else{
+
+            followButton = `
+                <button
+                    type="button"
+                    class="profile-btn"
+                    id="followBtn"
+                >
+                    👥 Follow Request
+                </button>
+            `;
+
+        }
+
+    }else{
+
+        followButton = `
+            <button
+                type="button"
+                class="profile-btn"
+                id="followBtn"
+            >
+                Follow
+            </button>
+        `;
+
+    }
+
+
+    area.innerHTML = `
+
+        <a
+            href="chat.html?user=${encodeURIComponent(targetId)}"
+            class="profile-btn"
+        >
+            💬 Message
+        </a>
+
+        ${followButton}
+
+    `;
+
+
+    const followBtn =
+        document.getElementById(
+            "followBtn"
+        );
+
+
+    if(followBtn){
+
+        followBtn.addEventListener(
+            "click",
+            toggleFollow
+        );
+
+    }
+
+}
+
+
+/* =========================
+   FOLLOW / REQUEST
+========================= */
+
+async function toggleFollow(){
+
+    if(
+        String(currentUser.id) ===
+        String(targetId)
+    ){
+
+        return;
+    }
+
+
+    /* =========================
+       UNFOLLOW
+    ========================= */
+
+    if(isFollowing){
+
+        const {
+            error
+        } =
+            await supabase
+                .from("followers")
+                .delete()
+                .eq(
+                    "follower_id",
+                    currentUser.id
+                )
+                .eq(
+                    "following_id",
+                    targetId
+                );
+
+
+        if(error){
+
+            console.error(error);
+
+            showToast(
+                "Unfollow nahi ho raha.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        isFollowing = false;
+
+
+        showToast(
+            "Unfollow ho gaya."
+        );
+
+
+        renderOtherProfileButtons();
+
+
+        await loadStats();
+        await loadUserPosts();
+
+        return;
+
+    }
+
+
+    /* =========================
+       PRIVATE ACCOUNT
+    ========================= */
+
+    if(currentProfile.is_private){
+
+        if(pendingRequest){
+
+            showToast(
+                "Follow request already sent.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const {
+            data: newRequest,
+            error
+        } =
+            await supabase
+                .from("follow_requests")
+                .insert({
+
+                    sender_id:
+                        currentUser.id,
+
+                    receiver_id:
+                        targetId,
+
+                    status:
+                        "pending"
+
+                })
+                .select()
+                .maybeSingle();
+
+
+        if(error){
+
+            console.error(
+                "REQUEST ERROR:",
+                error
+            );
+
+
+            if(
+                error.code === "23505"
+            ){
+
+                showToast(
+                    "Request already sent.",
+                    "error"
+                );
+
+            }else{
+
+                showToast(
+                    "Follow request send nahi hui.",
+                    "error"
+                );
+
+            }
+
+            return;
+        }
+
+
+        pendingRequest =
+            newRequest;
+
+
+        showToast(
+            "👥 Follow request sent."
+        );
+
+
+        renderOtherProfileButtons();
+
+
+        await createFollowNotification(
+            "follow_request"
+        );
+
+
+        return;
+
+    }
+
+
+    /* =========================
+       PUBLIC ACCOUNT
+    ========================= */
+
+    const {
+        error
+    } =
+        await supabase
+            .from("followers")
+            .insert({
+
+                follower_id:
+                    currentUser.id,
+
+                following_id:
+                    targetId
+
+            });
+
+
+    if(error){
+
+        console.error(
+            "FOLLOW ERROR:",
+            error
+        );
+
+        showToast(
+            "Follow nahi ho raha.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    isFollowing = true;
+
+
+    showToast(
+        "Follow ho gaya."
+    );
+
+
+    renderOtherProfileButtons();
+
+
+    await loadStats();
+
+
+    await createFollowNotification(
+        "follow"
+    );
+
+}
+
+
+/* =========================
+   FOLLOW NOTIFICATION
+========================= */
+
+async function createFollowNotification(type){
+
+    try{
+
+        const senderName =
+            currentProfileName();
+
+
+        let message =
+            senderName +
+            " started following you";
+
+
+        if(type === "follow_request"){
+
+            message =
+                senderName +
+                " sent you a follow request 👥";
+
+        }
+
+
+        await supabase
+            .from("notifications")
+            .insert({
+
+                user_id:
+                    targetId,
+
+                sender_id:
+                    currentUser.id,
+
+                type:
+                    type,
+
+                message:
+                    message
+
+            });
+
+    }catch(error){
+
+        console.error(
+            "NOTIFICATION ERROR:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   CURRENT PROFILE NAME
+========================= */
+
+function currentProfileName(){
+
+    return (
+        currentUser.user_metadata?.full_name ||
+        currentUser.user_metadata?.username ||
+        currentUser.email?.split("@")[0] ||
+        "Someone"
+    );
+
+}
+
+
+/* =========================
+   LOAD FOLLOW REQUESTS
+========================= */
+
+async function loadFollowRequests(){
+
+    const section =
+        document.getElementById(
+            "requestsSection"
+        );
+
+    const list =
+        document.getElementById(
+            "requestsList"
+        );
+
+
+    const {
+        data: requests,
+        error
+    } =
+        await supabase
+            .from("follow_requests")
+            .select(`
+                id,
+                sender_id,
+                status,
+                created_at,
+                profiles:sender_id (
+                    id,
+                    username,
+                    full_name,
+                    avatar_url
+                )
+            `)
+            .eq(
+                "receiver_id",
+                currentUser.id
+            )
+            .eq(
+                "status",
+                "pending"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
+            );
+
+
+    if(error){
+
+        console.error(
+            "REQUEST LOAD ERROR:",
+            error
+        );
+
+        section.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    if(
+        !requests ||
+        requests.length === 0
+    ){
+
+        section.style.display =
+            "none";
+
+        list.innerHTML = "";
+
+        return;
+
+    }
+
+
+    section.style.display =
+        "block";
+
+
+    list.innerHTML = "";
+
+
+    for(
+        const request of requests
+    ){
+
+        const profile =
+            request.profiles;
+
+
+        const name =
+            profile?.full_name ||
+            profile?.username ||
+            "AS User";
+
+
+        const username =
+            profile?.username
+            ? "@" + profile.username
+            : "";
+
+
+        let avatar =
+            name
+                .substring(0,2)
+                .toUpperCase();
+
+
+        if(profile?.avatar_url){
+
+            avatar = `
+                <img
+                    src="${escapeAttribute(
+                        profile.avatar_url
+                    )}"
+                    alt="Profile"
+                >
+            `;
+
+        }
+
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+
+        card.className =
+            "request-card";
+
+
+        card.innerHTML = `
+
+            <div class="request-avatar">
+                ${avatar}
+            </div>
+
+            <div class="request-info">
+
+                <strong>
+                    ${escapeHTML(name)}
+                </strong>
+
+                <small>
+                    ${escapeHTML(username)}
+                </small>
+
+            </div>
+
+            <div class="request-buttons">
+
+                <button
+                    type="button"
+                    class="accept-btn"
+                    data-id="${escapeAttribute(
+                        request.id
+                    )}"
+                    data-user="${escapeAttribute(
+                        request.sender_id
+                    )}"
+                    data-action="accept"
+                >
+                    ✓
+                </button>
+
+                <button
+                    type="button"
+                    class="reject-btn"
+                    data-id="${escapeAttribute(
+                        request.id
+                    )}"
+                    data-user="${escapeAttribute(
+                        request.sender_id
+                    )}"
+                    data-action="reject"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+        `;
+
+
+        list.appendChild(card);
+
+    }
+
+
+    list
+        .querySelectorAll(
+            "[data-action]"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    handleFollowRequest(
+                        button.dataset.id,
+                        button.dataset.user,
+                        button.dataset.action
+                    );
+
+                }
+            );
+
+        });
+
+}
+
+
+/* =========================
+   ACCEPT / REJECT
+========================= */
+
+async function handleFollowRequest(
+    requestId,
+    senderId,
+    action
+){
+
+    if(action === "accept"){
+
+        /* UPDATE REQUEST */
+
+        const {
+            error:updateError
+        } =
+            await supabase
+                .from("follow_requests")
+                .update({
+                    status:"accepted"
+                })
+                .eq(
+                    "id",
+                    requestId
+                )
+                .eq(
+                    "receiver_id",
+                    currentUser.id
+                );
+
+
+        if(updateError){
+
+            console.error(
+                updateError
+            );
+
+            showToast(
+                "Request accept nahi hui.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        /* ADD FOLLOWER */
+
+        const {
+            error:followError
+        } =
+            await supabase
+                .from("followers")
+                .insert({
+
+                    follower_id:
+                        senderId,
+
+                    following_id:
+                        currentUser.id
+
+                });
+
+
+        if(
+            followError &&
+            followError.code !== "23505"
+        ){
+
+            console.error(
+                followError
+            );
+
+            showToast(
+                "Follower add nahi hua.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        showToast(
+            "✅ Follow request accepted."
+        );
+
+
+        await createAcceptedNotification(
+            senderId
+        );
+
+
+    }else{
+
+
+        const {
+            error
+        } =
+            await supabase
+                .from("follow_requests")
+                .update({
+                    status:"rejected"
+                })
+                .eq(
+                    "id",
+                    requestId
+                )
+                .eq(
+                    "receiver_id",
+                    currentUser.id
+                );
+
+
+        if(error){
+
+            console.error(error);
+
+            showToast(
+                "Request reject nahi hui.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        showToast(
+            "Request rejected."
+        );
+
+    }
+
+
+    await loadFollowRequests();
+
+
+    await loadStats();
+
+}
+
+
+/* =========================
+   ACCEPT NOTIFICATION
+========================= */
+
+async function createAcceptedNotification(
+    userId
+){
+
+    try{
+
+        await supabase
+            .from("notifications")
+            .insert({
+
+                user_id:
+                    userId,
+
+                sender_id:
+                    currentUser.id,
+
+                type:
+                    "follow_accepted",
+
+                message:
+                    "Your follow request was accepted ✅"
+
+            });
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   CAN VIEW POSTS?
+========================= */
+
+async function canViewPosts(){
+
+    /* OWNER */
+
+    if(
+        String(targetId) ===
+        String(currentUser.id)
+    ){
+
+        return true;
+
+    }
+
+
+    /* PUBLIC */
+
+    if(
+        !currentProfile.is_private
+    ){
+
+        return true;
+
+    }
+
+
+    /* PRIVATE - CHECK ACCEPTED FOLLOWER */
+
+    const {
+        data: follower,
+        error
+    } =
+        await supabase
+            .from("followers")
+            .select("id")
+            .eq(
+                "follower_id",
+                currentUser.id
+            )
+            .eq(
+                "following_id",
+                targetId
+            )
+            .maybeSingle();
+
+
+    if(error){
+
+        console.error(
+            "FOLLOW CHECK ERROR:",
+            error
+        );
+
+        return false;
+
+    }
+
+
+    return !!follower;
+
+}
+
+
+/* =========================
+   LOAD USER POSTS
+========================= */
+
+async function loadUserPosts(){
+
+    const container =
+        document.getElementById(
+            "userPosts"
+        );
+
+
+    const allowed =
+        await canViewPosts();
+
+
+    if(!allowed){
+
+        container.innerHTML = `
+
+            <div class="private-message">
+
+                <div class="lock">
+                    🔒
+                </div>
+
+                <h3>
+                    This account is private
+                </h3>
+
+                <p>
+                    Follow request accept hone ke
+                    baad posts yahan dikhengi.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = `
+        <div class="loading">
+            Loading posts...
+        </div>
+    `;
+
+
+    const {
+        data:posts,
+        error
+    } =
+        await supabase
+            .from("posts")
+            .select("*")
+            .eq(
+                "user_id",
+                targetId
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
+            );
+
+
+    if(error){
+
+        console.error(
+            "POST ERROR:",
+            error
+        );
+
+
+        container.innerHTML = `
+            <div class="empty">
+                Posts load nahi ho rahi hain.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    if(
+        !posts ||
+        posts.length === 0
+    ){
+
+        container.innerHTML = `
+            <div class="empty">
+                Abhi koi post nahi hai. 📸
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    posts.forEach(post => {
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+
+        card.className =
+            "post-card";
+
+
+        let imageHTML = "";
+
+
+        if(post.image_url){
+
+            imageHTML = `
+                <img
+                    class="post-image"
+                    src="${escapeAttribute(
+                        post.image_url
+                    )}"
+                    alt="Post"
+                >
+            `;
+
+        }
+
+
+        card.innerHTML = `
+
+            ${
+                post.content
+                ?
+                `
+                    <div class="post-content">
+                        ${escapeHTML(
+                            post.content
+                        )}
+                    </div>
+                `
+                :
+                ""
+            }
+
+            ${imageHTML}
+
+            <div class="post-date">
+                ${formatDate(
+                    post.created_at
+                )}
+            </div>
+
+        `;
+
+
+        container.appendChild(
+            card
+        );
+
+    });
+
+}
+
+
+/* =========================
+   EDIT PROFILE
+========================= */
+
+function openEditModal(){
+
+    document.getElementById(
+        "editFullName"
+    ).value =
+        currentProfile.full_name || "";
+
+
+    document.getElementById(
+        "editUsername"
+    ).value =
+        currentProfile.username || "";
+
+
+    document.getElementById(
+        "editBio"
+    ).value =
+        currentProfile.bio || "";
+
+
+    document.getElementById(
+        "editModal"
+    ).style.display =
+        "flex";
+
+}
+
+
+function closeEditModal(){
+
+    document.getElementById(
+        "editModal"
+    ).style.display =
+        "none";
+
+}
+
+
+document
+    .getElementById("cancelEditBtn")
+    .addEventListener(
+        "click",
+        closeEditModal
+    );
+
+
+/* =========================
+   SAVE PROFILE
+========================= */
+
+async function saveProfile(){
+
+    const fullName =
+        document.getElementById(
+            "editFullName"
+        ).value.trim();
+
+
+    const username =
+        document.getElementById(
+            "editUsername"
+        ).value
+        .trim()
+        .toLowerCase()
+        .replace(
+            /\s+/g,
+            ""
+        );
+
+
+    const bio =
+        document.getElementById(
+            "editBio"
+        ).value.trim();
+
+
+    if(!username){
+
+        showToast(
+            "Username required hai.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    /* USERNAME CHECK */
+
+    const {
+        data:existing,
+        error:usernameError
+    } =
+        await supabase
+            .from("profiles")
+            .select("id")
+            .eq(
+                "username",
+                username
+            )
+            .neq(
+                "id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+
+    if(usernameError){
+
+        console.error(
+            usernameError
+        );
+
+        showToast(
+            "Username check failed.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if(existing){
+
+        showToast(
+            "Ye username already use ho raha hai.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+        await supabase
+            .from("profiles")
+            .update({
+
+                full_name:
+                    fullName,
+
+                username:
+                    username,
+
+                bio:
+                    bio
+
+            })
+            .eq(
+                "id",
+                currentUser.id
+            );
+
+
+    if(error){
+
+        console.error(
+            "PROFILE UPDATE ERROR:",
+            error
+        );
+
+        showToast(
+            "Profile update nahi hua.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    currentProfile.full_name =
+        fullName;
+
+    currentProfile.username =
+        username;
+
+    currentProfile.bio =
+        bio;
+
+
+    document.getElementById(
+        "fullName"
+    ).textContent =
+        fullName ||
+        username ||
+        "AS User";
+
+
+    document.getElementById(
+        "username"
+    ).textContent =
+        "@" + username;
+
+
+    document.getElementById(
+        "bio"
+    ).textContent =
+        bio;
+
+
+    closeEditModal();
+
+
+    showToast(
+        "Profile updated successfully."
+    );
+
+}
+
+
+/* =========================
+   SAVE BUTTON
+========================= */
+
+document
+    .getElementById("saveProfileBtn")
+    .addEventListener(
+        "click",
+        saveProfile
+    );
+
+
+/* =========================
+   PHOTO UPLOAD
+========================= */
+
+document
+    .getElementById("photoInput")
+    .addEventListener(
+        "change",
+        uploadPhoto
+    );
+
+
+async function uploadPhoto(event){
+
+    const file =
+        event.target.files[0];
+
+
+    if(!file)
+        return;
+
+
+    const extension =
+        file.name
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+
+    const filePath =
+        currentUser.id +
+        "." +
+        extension;
+
+
+    showToast(
+        "Photo uploading..."
+    );
+
+
+    const {
+        error:uploadError
+    } =
+        await supabase
+            .storage
+            .from("avatars")
+            .upload(
+                filePath,
+                file,
+                {
+                    upsert:true,
+                    contentType:
+                        file.type
+                }
+            );
+
+
+    if(uploadError){
+
+        console.error(
+            uploadError
+        );
+
+        showToast(
+            "Photo upload nahi hui.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const {
+        data:urlData
+    } =
+        supabase
+            .storage
+            .from("avatars")
+            .getPublicUrl(
+                filePath
+            );
+
+
+    const avatarUrl =
+        urlData.publicUrl +
+        "?t=" +
+        Date.now();
+
+
+    const {
+        error:updateError
+    } =
+        await supabase
+            .from("profiles")
+            .update({
+
+                avatar_url:
+                    avatarUrl
+
+            })
+            .eq(
+                "id",
+                currentUser.id
+            );
+
+
+    if(updateError){
+
+        console.error(
+            updateError
+        );
+
+        showToast(
+            "Profile photo save nahi hui.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    currentProfile.avatar_url =
+        avatarUrl;
+
+
+    document.getElementById(
+        "avatar"
+    ).innerHTML = `
+        <img
+            src="${escapeAttribute(
+                avatarUrl
+            )}"
+            alt="Profile"
+        >
+    `;
+
+
+    showToast(
+        "📷 Profile photo updated."
+    );
+
+}
+
+
+/* =========================
+   STATS CLICK
+========================= */
+
+document
+    .getElementById("followersStat")
+    .addEventListener(
+        "click",
+        () => {
+
+            window.location.href =
+                "followers.html?user=" +
+                encodeURIComponent(
+                    targetId
+                );
+
+        }
+    );
+
+
+document
+    .getElementById("followingStat")
+    .addEventListener(
+        "click",
+        () => {
+
+            window.location.href =
+                "following.html?user=" +
+                encodeURIComponent(
+                    targetId
+                );
+
+        }
+    );
+
+
+document
+    .getElementById("postsStat")
+    .addEventListener(
+        "click",
+        () => {
+
+            window.scrollTo({
+                top:document.body.scrollHeight,
+                behavior:"smooth"
+            });
+
+        }
+    );
+
+
+/* =========================
+   CLOSE MODAL
+========================= */
+
+document
+    .getElementById("editModal")
+    .addEventListener(
+        "click",
+        event => {
+
+            if(
+                event.target.id ===
+                "editModal"
+            ){
+
+                closeEditModal();
+
+            }
+
+        }
+    );
+
+
+/* =========================
+   START
+========================= */
+
+async function start(){
+
+    const user =
+        await checkUser();
+
+
+    if(!user)
+        return;
+
+
+    targetId =
+        getTargetId();
+
+
+    if(!targetId){
+
+        targetId =
+            currentUser.id;
+
+    }
+
+
+    await loadProfile();
+
+}
+
+
+start();
+
+</script>
+
+</body>
+</html>

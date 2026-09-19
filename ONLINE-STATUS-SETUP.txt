@@ -1,0 +1,25 @@
+
+AS-SOCIAL GLOBAL ONLINE FIX
+
+1. Copy presence.js into:
+   AS-Social/js/presence.js
+
+2. The HTML files in this folder already contain:
+   <script type="module" src="js/presence.js"></script>
+
+3. Copy the modified HTML files into your AS-Social project.
+
+4. If your project already has a newer version of any HTML file,
+   keep that newer file and only add the presence.js script before </body>.
+
+5. The shared realtime room is:
+   AS-Social-Global-Online
+
+6. The current logged-in user is tracked automatically as ONLINE.
+   Internet loss changes the local UI to offline and Supabase Presence
+   removes the user from the realtime room.
+
+IMPORTANT:
+Do not create a second global presence channel with the same purpose
+inside chat.js. The new presence.js should be the single global presence
+manager.
